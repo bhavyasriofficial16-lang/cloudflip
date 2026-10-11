@@ -1,0 +1,114 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: >
+  CloudFlip.ai - 1-Click Autonomous Cloud Management & Predictive Scaling Integration.
+  This template securely creates a cross-account IAM Role with least-privilege telemetry
+  read access and narrowly scoped Auto Scaling Group remediation permissions.
+
+Parameters:
+  ExternalId:
+    Type: String
+    Description: >
+      Unique tenant External ID provided by your CloudFlip Dashboard.
+      Prevents the Confused Deputy vulnerability across multi-tenant accounts.
+    Default: 'cloudflip-prod-external-id'
+    MinLength: 8
+
+  CloudFlipAccountId:
+    Type: String
+    Description: >
+      AWS Account ID of CloudFlip's SaaS backend execution engine.
+    Default: '123456789012'
+    AllowedPattern: '^[0-9]{12}$'
+
+  EnableAutonomousRemediation:
+    Type: String
+    Default: 'true'
+    AllowedValues:
+      - 'true'
+      - 'false'
+    Description: >
+      Allow CloudFlip to execute verified Auto Scaling adjustments when capacity
+      bottlenecks or traffic surges are predicted.
+
+Conditions:
+  CanRemediate: !Equals [!Ref EnableAutonomousRemediation, 'true']
+
+Resources:
+  CloudFlipIAMRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: !Sub 'CloudFlipIntegrationRole-${AWS::Region}'
+      Description: 'Cross-account execution role for CloudFlip.ai predictive operations'
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              AWS: !Sub 'arn:aws:iam::${CloudFlipAccountId}:root'
+            Action: 'sts:AssumeRole'
+            Condition:
+              StringEquals:
+                'sts:ExternalId': !Ref ExternalId
+
+  CloudFlipReadOnlyTelemetryPolicy:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyName: 'CloudFlipTelemetryDiscoveryPolicy'
+      Roles:
+        - !Ref CloudFlipIAMRole
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Sid: 'CloudWatchMetricsRead'
+            Effect: Allow
+            Action:
+              - 'cloudwatch:GetMetricStatistics'
+              - 'cloudwatch:GetMetricData'
+              - 'cloudwatch:ListMetrics'
+            Resource: '*'
+          - Sid: 'FleetDiscoveryRead'
+            Effect: Allow
+            Action:
+              - 'ec2:DescribeInstances'
+              - 'ec2:DescribeInstanceStatus'
+              - 'ec2:DescribeRegions'
+              - 'autoscaling:DescribeAutoScalingGroups'
+              - 'autoscaling:DescribeAutoScalingInstances'
+              - 'autoscaling:DescribeScalingActivities'
+              - 'rds:DescribeDBInstances'
+              - 'elasticloadbalancing:DescribeLoadBalancers'
+              - 'elasticloadbalancing:DescribeTargetGroups'
+              - 'elasticloadbalancing:DescribeTargetHealth'
+              - 'tag:GetResources'
+            Resource: '*'
+
+  CloudFlipRemediationPolicy:
+    Type: AWS::IAM::Policy
+    Condition: CanRemediate
+    Properties:
+      PolicyName: 'CloudFlipControlledScalingPolicy'
+      Roles:
+        - !Ref CloudFlipIAMRole
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Sid: 'ControlledCapacityScaling'
+            Effect: Allow
+            Action:
+              - 'autoscaling:SetDesiredCapacity'
+            Resource: '*'
+
+Outputs:
+  RoleArn:
+    Description: 'The ARN of the created IAM Role to paste into your CloudFlip Settings.'
+    Value: !GetAtt CloudFlipIAMRole.Arn
+    Export:
+      Name: !Sub '${AWS::StackName}-RoleArn'
+
+  ExternalId:
+    Description: 'The External ID configured for secure cross-account STS access.'
+    Value: !Ref ExternalId
+
+  CloudFlipQuickConnectStatus:
+    Description: 'Ready to connect to CloudFlip SaaS platform.'
+    Value: 'Configured'

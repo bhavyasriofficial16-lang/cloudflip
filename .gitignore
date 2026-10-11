@@ -1,0 +1,28 @@
+# Python
+__pycache__/
+*.pyc
+.venv/
+*.db
+
+# Node
+node_modules/
+dist/
+.vite/
+
+# Env
+.env
+
+# OS
+.DS_Store
+
+# Personal & Academic Documents (Private)
+*CV*
+*Transcript*
+*Personal_Statement*
+*Boddeti*
+cv.txt
+transcript_temp.txt
+build_cv_pdf.py
+generate_cv*.py
+*.pdf
+
