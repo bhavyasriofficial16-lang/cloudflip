@@ -43,6 +43,7 @@ class AnomalyOut(BaseModel):
 
 
 class PredictionOut(BaseModel):
+    model_config = {"protected_namespaces": ()}
     metric_name: str
     horizon_minutes: int
     predicted_value: float

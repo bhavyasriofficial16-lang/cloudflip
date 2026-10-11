@@ -101,6 +101,17 @@ def on_shutdown():
     telemetry_daemon.stop()
 
 
+@app.get("/")
+def root():
+    return {
+        "service": "CloudFlip.ai API",
+        "status": "online",
+        "docs": "/docs",
+        "health": "/api/health",
+        "version": "0.1.0",
+    }
+
+
 @app.get("/api/health")
 def health():
     return {

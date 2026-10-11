@@ -111,13 +111,13 @@ class TelemetryDaemon:
                 # Check if pending recommendation exists
                 existing = db.query(m.Recommendation).filter_by(status=m.ApprovalStatus.pending).first()
                 if not existing:
+                    target_res = db.query(m.Resource).filter(m.Resource.resource_type == "ASG").first() or db.query(m.Resource).first()
+                    res_id = target_res.id if target_res else "web-asg-1"
                     target_instances = min(130, max(4, int(f.predicted_value / 1200)))
                     new_rec = m.Recommendation(
                         title=f"Predictive Scale-Up: Traffic projected to surge to {int(f.predicted_value)} RPM",
-                        description=f"Daemon forecasted surge ({f.predicted_value:.0f} RPM) in {f.horizon_minutes}m. Proactively scaling Auto Scaling fleet to maintain 180ms SLA bounds.",
-                        resource_id="orders-web-asg-1",
-                        category="capacity",
-                        severity="high",
+                        reason=f"Daemon forecasted surge ({f.predicted_value:.0f} RPM) in {f.horizon_minutes}m. Proactively scaling Auto Scaling fleet to maintain 180ms SLA bounds.",
+                        resource_id=res_id,
                         confidence="high",
                         current_state={"instances": 4},
                         recommended_state={"instances": target_instances},
