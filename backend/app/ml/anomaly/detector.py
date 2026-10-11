@@ -5,9 +5,13 @@ Starts with rolling average / rolling standard deviation / z-score /
 EWMA, as specified. Isolation Forest is stubbed for a later iteration
 (kept out of the MVP so the model stays explainable and fast).
 """
+import math
 from dataclasses import dataclass
 
-import numpy as np
+try:
+    import numpy as np
+except ImportError:
+    np = None
 
 
 @dataclass
@@ -40,10 +44,17 @@ def zscore_anomaly(series: list[float], threshold: float = 2.0) -> AnomalyResult
         current = series[-1] if series else 0.0
         return AnomalyResult(False, current, current, 0.0, "low", "zscore")
 
-    history = np.array(series[:-1], dtype=float)
+    history = series[:-1]
     current = float(series[-1])
-    mean = float(history.mean())
-    std = float(history.std()) or 1e-6
+
+    if np is not None:
+        arr = np.array(history, dtype=float)
+        mean = float(arr.mean())
+        std = float(arr.std()) or 1e-6
+    else:
+        mean = sum(history) / len(history)
+        variance = sum((x - mean) ** 2 for x in history) / len(history)
+        std = math.sqrt(variance) or 1e-6
 
     sigma = (current - mean) / std
     is_anomaly = abs(sigma) >= threshold
@@ -55,6 +66,7 @@ def zscore_anomaly(series: list[float], threshold: float = 2.0) -> AnomalyResult
         severity=_severity_from_sigma(sigma) if is_anomaly else "low",
         method="zscore",
     )
+
 
 
 def ewma_anomaly(series: list[float], alpha: float = 0.3, threshold: float = 2.0) -> AnomalyResult:

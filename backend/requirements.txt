@@ -11,4 +11,6 @@ razorpay==1.4.2
 python-jose[cryptography]==3.3.0
 python-dotenv==1.0.1
 httpx==0.27.2
+numpy==2.1.1
+
 
