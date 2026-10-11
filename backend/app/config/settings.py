@@ -9,9 +9,9 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 class Settings(BaseSettings):
     environment: str = "demo"                      # "demo" | "live"
     secret_key: str = "change-me"
-    cors_origins: str = "http://localhost:5173"
+    cors_origins: str = "http://localhost:5173,*"
 
-    database_url: str = "postgresql+psycopg2://cloudflip:cloudflip@localhost:5432/cloudflip"
+    database_url: str = "sqlite:///./cloudflip.db"
 
     supabase_url: str = ""
     supabase_anon_key: str = ""
