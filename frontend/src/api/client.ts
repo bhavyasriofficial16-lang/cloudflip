@@ -88,6 +88,12 @@ export const api = {
       method: "POST",
       body: JSON.stringify(payload),
     }),
+  getAzureStatus: () => request<any>("/api/settings/azure"),
+  connectAzure: (payload: { subscription_id: string; tenant_id?: string; client_id?: string; client_secret?: string; resource_group?: string; region?: string }) =>
+    request<any>("/api/settings/azure", {
+      method: "POST",
+      body: JSON.stringify(payload),
+    }),
   setSafetyMode: (simulation_only_mode: boolean) =>
     request<any>("/api/settings/safety-mode", {
       method: "POST",

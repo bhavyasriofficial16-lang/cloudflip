@@ -9,18 +9,101 @@ declare global {
   }
 }
 
+const DEFAULT_PLANS = [
+  {
+    id: "free",
+    name: "Free / Starter",
+    target_customer: "Developers & Testers",
+    price_inr: "₹0",
+    price_usd: "$0",
+    price_display: "$0",
+    features: [
+      "Simulator only (up to 3 resources)",
+      "Gets users hooked on the product",
+      "No real AWS connection required",
+      "Basic metrics & dashboard",
+    ],
+    cta: "Start free",
+  },
+  {
+    id: "pay_as_you_go",
+    name: "Pay-As-You-Go",
+    target_customer: "Small Teams & Variable Workloads",
+    price_inr: "₹15 / resource-hr",
+    price_usd: "$0.20 / resource-hr",
+    price_display: "$0.20 / resource-hr (₹15/hr)",
+    features: [
+      "Zero friction to start",
+      "Scales automatically with client growth",
+      "No monthly commitment",
+      "Full Pro features & metrics",
+    ],
+    cta: "Start Pay-As-You-Go",
+  },
+  {
+    id: "pro_monthly",
+    name: "Pro Monthly",
+    target_customer: "Growing Companies",
+    price_inr: "₹4,999 / mo",
+    price_usd: "$59 / mo",
+    price_display: "$59 / mo (₹4,999/mo)",
+    features: [
+      "Predictable MRR (Monthly Recurring Revenue)",
+      "Real AWS & Multi-Cloud connection",
+      "Predictions, anomalies & simulator",
+      "Manual & autonomous AI remediation",
+    ],
+    cta: "Start Pro Monthly",
+  },
+  {
+    id: "pro_annual",
+    name: "Pro Annual",
+    target_customer: "Established Businesses",
+    price_inr: "₹49,990 / yr",
+    price_usd: "$590 / yr",
+    price_display: "$590 / yr (2 months free)",
+    badge: "2 months free",
+    features: [
+      "Upfront annual cash flow & lower churn",
+      "Everything in Pro Monthly",
+      "2 months free included",
+      "Priority SRE support & SLA",
+    ],
+    cta: "Start Pro Annual",
+  },
+  {
+    id: "enterprise",
+    name: "Enterprise",
+    target_customer: "Large Scale Infrastructure",
+    price_inr: "Custom Quote",
+    price_usd: "Custom / Quote",
+    price_display: "Custom / Quote",
+    badge: "Custom SLA",
+    features: [
+      "SLA guarantee",
+      "Custom guardrails & policy engine",
+      "Dedicated solution architect",
+      "Unlimited AWS & Azure accounts",
+    ],
+    cta: "Contact Sales",
+  },
+];
+
 export default function Pricing() {
-  const [plans, setPlans] = useState<any[]>([]);
+  const [plans, setPlans] = useState<any[]>(DEFAULT_PLANS);
   const [region, setRegion] = useState<"IN" | "GLOBAL">("IN"); // Default India / INR
   const [busy, setBusy] = useState<string | null>(null);
   const { session } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
-    api.plans().then(setPlans).catch(() => {});
+    // Background sync with API catalog without blocking initial paint
+    api.plans().then((remotePlans) => {
+      if (remotePlans && remotePlans.length > 0) setPlans(remotePlans);
+    }).catch(() => {});
 
-    // Load Razorpay Checkout SDK script dynamically
-    if (!document.getElementById("razorpay-sdk")) {
+    // Ensure Razorpay Checkout SDK is ready
+    if (!document.getElementById("razorpay-sdk") && typeof window !== "undefined" && !window.Razorpay) {
       const script = document.createElement("script");
       script.id = "razorpay-sdk";
       script.src = "https://checkout.razorpay.com/v1/checkout.js";
@@ -30,6 +113,10 @@ export default function Pricing() {
   }, []);
 
   const choose = async (planId: string) => {
+    if (planId === "enterprise") {
+      window.location.href = "mailto:sales@cloudflip.ai?subject=CloudFlip.ai%20Enterprise%20Inquiry";
+      return;
+    }
     if (planId === "free") {
       navigate(session ? "/app" : "/signup");
       return;
@@ -195,13 +282,23 @@ export default function Pricing() {
               <button
                 onClick={() => choose(p.id)}
                 disabled={busy === p.id}
-                className={`w-full rounded-md py-2 text-[13px] font-semibold transition-all ${
+                className={`w-full rounded-md py-2.5 text-[13px] font-semibold transition-all flex items-center justify-center gap-2 ${
                   p.badge
                     ? "bg-[#4FD1E8] text-[#04141A] hover:bg-[#3ec4db] shadow-xs"
                     : "border border-slate-300 text-slate-800 hover:bg-slate-50"
-                } ${busy === p.id ? "opacity-60 cursor-not-allowed" : ""}`}
+                } ${busy === p.id ? "opacity-75 cursor-not-allowed" : ""}`}
               >
-                {busy === p.id ? "Processing…" : p.cta}
+                {busy === p.id ? (
+                  <>
+                    <svg className="animate-spin h-3.5 w-3.5 text-current" fill="none" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    <span>Opening Checkout…</span>
+                  </>
+                ) : (
+                  p.cta
+                )}
               </button>
             </div>
           ))}

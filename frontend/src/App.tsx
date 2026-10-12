@@ -79,6 +79,11 @@ function AppShell() {
 }
 
 export default function App() {
+  useEffect(() => {
+    // Proactive background warmup ping to ensure Render is awake and fast
+    api.health().catch(() => {});
+  }, []);
+
   return (
     <AuthProvider>
       <Routes>

@@ -8,12 +8,17 @@ export default function Settings() {
   const { user, session, signOut, authProvider } = useAuth();
   const [sub, setSub] = useState<any>(null);
   const [awsStatus, setAwsStatus] = useState<any>({ connected: false, region: "ap-south-1", simulation_only_mode: true });
+  const [azureStatus, setAzureStatus] = useState<any>({ connected: false, region: "centralindia" });
   const [showAwsModal, setShowAwsModal] = useState(false);
-  const [authType, setAuthType] = useState<"cloudformation" | "role" | "keys">("cloudformation");
+  const [authType, setAuthType] = useState<"cloudformation" | "role" | "keys" | "azure">("cloudformation");
   const [roleArn, setRoleArn] = useState("");
   const [accessKeyId, setAccessKeyId] = useState("");
   const [secretAccessKey, setSecretAccessKey] = useState("");
   const [region, setRegion] = useState("ap-south-1");
+  const [azureSubId, setAzureSubId] = useState("");
+  const [azureTenantId, setAzureTenantId] = useState("");
+  const [azureClientId, setAzureClientId] = useState("");
+  const [azureClientSecret, setAzureClientSecret] = useState("");
   const [externalId, setExternalId] = useState("cloudflip-tenant-883921");
   const [cfQuickUrl, setCfQuickUrl] = useState("");
   const [busy, setBusy] = useState(false);
@@ -21,6 +26,7 @@ export default function Settings() {
   useEffect(() => {
     if (session) api.subscription().then(setSub).catch(() => {});
     fetchAwsStatus();
+    fetchAzureStatus();
     api.getCloudFormationQuickLaunch(region, externalId).then((res) => {
       if (res.quick_launch_url) setCfQuickUrl(res.quick_launch_url);
     }).catch(() => {});
@@ -28,6 +34,10 @@ export default function Settings() {
 
   const fetchAwsStatus = () => {
     api.getAWSStatus().then(setAwsStatus).catch(() => {});
+  };
+
+  const fetchAzureStatus = () => {
+    api.getAzureStatus().then(setAzureStatus).catch(() => {});
   };
 
   const handleConnectAws = async (e: React.FormEvent) => {
@@ -50,6 +60,31 @@ export default function Settings() {
       alert(res.message || "AWS Account connected successfully!");
     } catch (err: any) {
       alert("AWS Connection failed: " + err.message);
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  const handleConnectAzure = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setBusy(true);
+    try {
+      const res = await api.connectAzure({
+        subscription_id: azureSubId || "00000000-0000-0000-0000-000000000000",
+        tenant_id: azureTenantId,
+        client_id: azureClientId,
+        client_secret: azureClientSecret,
+        region: "centralindia",
+      });
+      setAzureStatus({
+        connected: true,
+        subscription_id: azureSubId || "demo-student-sub",
+        region: "centralindia",
+      });
+      setShowAwsModal(false);
+      alert(res.message || "Microsoft Azure for Students connected successfully!");
+    } catch (err: any) {
+      alert("Azure Connection failed: " + err.message);
     } finally {
       setBusy(false);
     }
@@ -116,7 +151,7 @@ export default function Settings() {
           }
         >
           <button 
-            onClick={() => setShowAwsModal(true)} 
+            onClick={() => { setAuthType("cloudformation"); setShowAwsModal(true); }} 
             className={`text-[13px] font-semibold rounded-md px-3.5 py-1.5 transition-colors ${
               awsStatus.connected 
                 ? "bg-emerald-600 text-white hover:bg-emerald-700" 
@@ -124,6 +159,27 @@ export default function Settings() {
             }`}
           >
             {awsStatus.connected ? "Reconfigure AWS" : "Connect AWS Account"}
+          </button>
+        </Row>
+
+        {/* Microsoft Azure (Student / Multi-Cloud) Connection */}
+        <Row 
+          label="Microsoft Azure (Student / Multi-Cloud)" 
+          desc={
+            azureStatus.connected 
+              ? `Connected (Subscription: ${azureStatus.subscription_id?.slice(0, 8)}... · Region: ${azureStatus.region})`
+              : "Azure for Students ($100 Free Credit — No Credit Card) · Connect Virtual Machine Scale Sets"
+          }
+        >
+          <button 
+            onClick={() => { setAuthType("azure"); setShowAwsModal(true); }} 
+            className={`text-[13px] font-semibold rounded-md px-3.5 py-1.5 transition-colors ${
+              azureStatus.connected 
+                ? "bg-blue-600 text-white hover:bg-blue-700" 
+                : "bg-[#0078D4] text-white hover:bg-[#006cbd] shadow-xs"
+            }`}
+          >
+            {azureStatus.connected ? "Reconfigure Azure" : "Connect Azure ($100 Free)"}
           </button>
         </Row>
 
@@ -187,16 +243,92 @@ export default function Settings() {
                 onClick={() => setAuthType("keys")}
                 className={`py-2 px-3 text-[12.5px] font-semibold border-b-2 whitespace-nowrap transition-colors ${
                   authType === "keys" 
-                    ? "border-sky-500 text-sky-600" 
+                    ? "border-sky-500 text-sky-600 font-bold" 
                     : "border-transparent text-slate-500 hover:text-slate-900"
                 }`}
               >
                 AWS Access Keys
               </button>
+              <button 
+                type="button"
+                onClick={() => setAuthType("azure")}
+                className={`py-2 px-3 text-[12.5px] font-semibold border-b-2 whitespace-nowrap transition-colors ${
+                  authType === "azure" 
+                    ? "border-blue-500 text-blue-600 font-bold" 
+                    : "border-transparent text-slate-500 hover:text-slate-900"
+                }`}
+              >
+                🔷 Microsoft Azure (Students)
+              </button>
             </div>
 
-            <form onSubmit={handleConnectAws} className="space-y-4">
-              {authType === "cloudformation" ? (
+            <form onSubmit={authType === "azure" ? handleConnectAzure : handleConnectAws} className="space-y-4">
+              {authType === "azure" ? (
+                <div className="space-y-3.5">
+                  <div className="bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-lg p-3.5">
+                    <div className="font-semibold text-[13px] text-blue-950 mb-1 flex items-center justify-between">
+                      <span>🎓 Azure for Students ($100 Free Credit)</span>
+                      <span className="text-[10px] font-bold bg-blue-200 text-blue-900 px-2 py-0.5 rounded uppercase">No Credit Card</span>
+                    </div>
+                    <p className="text-[12px] text-slate-600 mb-2 leading-relaxed">
+                      College students can claim $100 free credit at{" "}
+                      <a href="https://azure.microsoft.com/free/students" target="_blank" rel="noreferrer" className="text-blue-600 underline font-semibold">
+                        azure.microsoft.com/free/students ↗
+                      </a>{" "}
+                      using your student email address.
+                    </p>
+                    <div className="text-[11.5px] text-blue-800 font-medium">
+                      CloudFlip connects directly to Azure Virtual Machine Scale Sets (VMSS) & Azure Monitor metrics.
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block text-[12.5px] font-semibold text-slate-700 mb-1">Azure Subscription ID *</label>
+                    <input 
+                      type="text" 
+                      placeholder="e.g. 12345678-1234-1234-1234-123456789012"
+                      value={azureSubId}
+                      onChange={(e) => setAzureSubId(e.target.value)}
+                      className="w-full bg-slate-50 border border-slate-300 rounded-lg px-3 py-2 text-[13.5px] text-slate-900 font-mono focus:outline-none focus:border-blue-500"
+                      required
+                    />
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-3">
+                    <div>
+                      <label className="block text-[12.5px] font-semibold text-slate-700 mb-1">Tenant ID (Directory ID)</label>
+                      <input 
+                        type="text" 
+                        placeholder="Azure Tenant ID"
+                        value={azureTenantId}
+                        onChange={(e) => setAzureTenantId(e.target.value)}
+                        className="w-full bg-slate-50 border border-slate-300 rounded-lg px-3 py-2 text-[12.5px] text-slate-900 font-mono focus:outline-none focus:border-blue-500"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-[12.5px] font-semibold text-slate-700 mb-1">Client ID (App ID)</label>
+                      <input 
+                        type="text" 
+                        placeholder="Service Principal ID"
+                        value={azureClientId}
+                        onChange={(e) => setAzureClientId(e.target.value)}
+                        className="w-full bg-slate-50 border border-slate-300 rounded-lg px-3 py-2 text-[12.5px] text-slate-900 font-mono focus:outline-none focus:border-blue-500"
+                      />
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block text-[12.5px] font-semibold text-slate-700 mb-1">Client Secret (Password)</label>
+                    <input 
+                      type="password" 
+                      placeholder="Service Principal Client Secret"
+                      value={azureClientSecret}
+                      onChange={(e) => setAzureClientSecret(e.target.value)}
+                      className="w-full bg-slate-50 border border-slate-300 rounded-lg px-3 py-2 text-[12.5px] text-slate-900 font-mono focus:outline-none focus:border-blue-500"
+                    />
+                  </div>
+                </div>
+              ) : authType === "cloudformation" ? (
                 <div className="space-y-3">
                   <div className="bg-gradient-to-r from-sky-50 to-indigo-50 border border-sky-200 rounded-lg p-3.5">
                     <div className="font-semibold text-[13px] text-slate-900 mb-1 flex items-center justify-between">
@@ -289,23 +421,25 @@ export default function Settings() {
                 </>
               )}
 
-              <div>
-                <label className="block text-[12.5px] font-semibold text-slate-700 mb-1">Primary AWS Region</label>
-                <select 
-                  value={region} 
-                  onChange={(e) => setRegion(e.target.value)}
-                  className="w-full bg-slate-50 border border-slate-300 rounded-lg px-3 py-2 text-[13.5px] text-slate-900 focus:outline-none focus:border-sky-500"
-                >
-                  <option value="ap-south-1">ap-south-1 (Asia Pacific - Mumbai)</option>
-                  <option value="us-east-1">us-east-1 (US East - N. Virginia)</option>
-                  <option value="us-west-2">us-west-2 (US West - Oregon)</option>
-                  <option value="eu-west-1">eu-west-1 (Europe - Ireland)</option>
-                  <option value="ap-southeast-1">ap-southeast-1 (Singapore)</option>
-                </select>
-              </div>
+              {authType !== "azure" && (
+                <div>
+                  <label className="block text-[12.5px] font-semibold text-slate-700 mb-1">Primary AWS Region</label>
+                  <select 
+                    value={region} 
+                    onChange={(e) => setRegion(e.target.value)}
+                    className="w-full bg-slate-50 border border-slate-300 rounded-lg px-3 py-2 text-[13.5px] text-slate-900 focus:outline-none focus:border-sky-500"
+                  >
+                    <option value="ap-south-1">ap-south-1 (Asia Pacific - Mumbai)</option>
+                    <option value="us-east-1">us-east-1 (US East - N. Virginia)</option>
+                    <option value="us-west-2">us-west-2 (US West - Oregon)</option>
+                    <option value="eu-west-1">eu-west-1 (Europe - Ireland)</option>
+                    <option value="ap-southeast-1">ap-southeast-1 (Singapore)</option>
+                  </select>
+                </div>
+              )}
 
               <div className="bg-sky-50 border border-sky-200 rounded-lg p-3 text-[12px] text-sky-800">
-                🔒 <strong>Security Guarantee:</strong> AWS Access utilizes STS identity verification. Keys and secrets are stored in secure server environment settings.
+                🔒 <strong>Security Guarantee:</strong> {authType === "azure" ? "Azure connection uses standard RBAC credentials. Secrets are stored securely." : "AWS Access utilizes STS identity verification. Keys and secrets are never exposed to clients."}
               </div>
 
               <div className="flex justify-end gap-3 pt-2">
@@ -319,9 +453,11 @@ export default function Settings() {
                 <button 
                   type="submit" 
                   disabled={busy}
-                  className="px-4 py-2 text-[13px] font-semibold bg-[#4FD1E8] text-[#04141A] hover:bg-[#3ec4db] rounded-lg shadow-xs disabled:opacity-50"
+                  className={`px-4 py-2 text-[13px] font-semibold rounded-lg shadow-xs disabled:opacity-50 text-white ${
+                    authType === "azure" ? "bg-blue-600 hover:bg-blue-700" : "bg-[#4FD1E8] text-[#04141A] hover:bg-[#3ec4db]"
+                  }`}
                 >
-                  {busy ? "Verifying with AWS STS…" : "Save & Verify Connection"}
+                  {busy ? "Verifying Credentials…" : authType === "azure" ? "Connect Azure ($100 Free)" : "Save & Verify Connection"}
                 </button>
               </div>
             </form>

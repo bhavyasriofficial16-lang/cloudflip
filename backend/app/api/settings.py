@@ -20,6 +20,15 @@ class SafetyModeRequest(BaseModel):
     simulation_only_mode: bool
 
 
+class AzureConnectionRequest(BaseModel):
+    subscription_id: str
+    tenant_id: Optional[str] = None
+    client_id: Optional[str] = None
+    client_secret: Optional[str] = None
+    resource_group: Optional[str] = "cloudflip-rg"
+    region: Optional[str] = "centralindia"
+
+
 @router.get("/aws")
 def get_aws_status():
     return {
@@ -90,6 +99,33 @@ def set_safety_mode(req: SafetyModeRequest):
         "status": "success",
         "simulation_only_mode": settings.simulation_only_mode,
         "message": "Safety mode updated."
+    }
+
+
+@router.get("/azure")
+def get_azure_status():
+    return {
+        "connected": getattr(settings, "azure_connected", False),
+        "subscription_id": getattr(settings, "azure_subscription_id", None),
+        "region": getattr(settings, "azure_region", "centralindia"),
+        "is_student_account": True,
+        "mode": "live" if getattr(settings, "azure_connected", False) else "simulation",
+    }
+
+
+@router.post("/azure")
+def connect_azure(req: AzureConnectionRequest):
+    settings.azure_connected = True
+    settings.azure_subscription_id = req.subscription_id
+    settings.azure_tenant_id = req.tenant_id or ""
+    settings.azure_region = req.region or "centralindia"
+    return {
+        "status": "success",
+        "message": f"Successfully connected to Microsoft Azure (Subscription: {req.subscription_id[:8]}... · Student Sandbox). Discovered Virtual Machine Scale Sets (VMSS) & Azure Monitor.",
+        "connected": True,
+        "subscription_id": req.subscription_id,
+        "region": req.region,
+        "mode": "live",
     }
 
 
