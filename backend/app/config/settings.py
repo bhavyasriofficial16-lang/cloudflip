@@ -25,7 +25,7 @@ class Settings(BaseSettings):
     stripe_price_monthly: str = ""       # Stripe Price ID for the monthly plan
     stripe_price_annual: str = ""        # Stripe Price ID for the annual plan
     stripe_price_metered: str = ""       # Stripe metered Price ID for pay-as-you-go
-    frontend_url: str = "http://localhost:5173"
+    frontend_url: str = "https://cloudflip-five.vercel.app"
 
     # Razorpay settings for India payments
     razorpay_key_id: str = ""
