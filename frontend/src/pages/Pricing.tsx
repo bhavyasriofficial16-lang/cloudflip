@@ -150,7 +150,7 @@ export default function Pricing() {
           key: orderData.key_id,
           amount: orderData.amount,
           currency: orderData.currency,
-          name: "CloudFlip.ai",
+          name: "CloudFlip",
           description: `Subscription for ${orderData.plan_name}`,
           order_id: orderData.order_id,
           handler: async function (response: any) {
@@ -199,7 +199,7 @@ export default function Pricing() {
       <header className="sticky top-0 z-50 backdrop-blur bg-white/90 border-b border-slate-200">
         <div className="max-w-[1180px] mx-auto px-8 h-16 flex items-center justify-between">
           <Link to="/" className="flex items-center gap-2 font-display font-bold text-[19px] text-slate-900">
-            <span className="text-cyan-500">☁</span> CloudFlip<span className="text-cyan-500">.ai</span>
+            <span className="text-cyan-500">☁</span> CloudFlip
           </Link>
           <Link to="/app" className="bg-[#4FD1E8] text-[#04141A] font-semibold text-[14px] rounded-md px-4 py-2 hover:bg-[#3ec4db] transition-colors shadow-xs">
             {session ? "Go to dashboard" : "Try the demo"}

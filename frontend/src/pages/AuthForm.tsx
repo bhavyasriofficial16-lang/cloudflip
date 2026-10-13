@@ -28,7 +28,7 @@ export default function AuthForm({ mode }: { mode: "login" | "signup" }) {
     <div className="min-h-screen flex items-center justify-center px-6 bg-white text-slate-900 font-sans">
       <div className="w-full max-w-[380px]">
         <Link to="/" className="flex items-center gap-2 font-display font-bold text-[19px] justify-center mb-8 text-slate-900">
-          <span className="text-cyan-500">☁</span> CloudFlip<span className="text-cyan-500">.ai</span>
+          <span className="text-cyan-500">☁</span> CloudFlip
         </Link>
 
         <div className="bg-white border border-slate-200 rounded-xl p-7 shadow-sm">
