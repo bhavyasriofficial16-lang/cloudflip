@@ -1,4 +1,5 @@
 import { NavLink } from "react-router-dom";
+import CloudFlipLogo from "./CloudFlipLogo";
 
 const groups: { label: string; links: { to: string; label: string; icon?: string }[] }[] = [
   { label: "Overview", links: [{ to: "/app", label: "Dashboard", icon: "📊" }] },
@@ -46,9 +47,7 @@ export default function Sidebar({
   const content = (
     <div className="flex flex-col h-full p-4 overflow-y-auto font-sans">
       <div className="flex items-center justify-between px-2 pb-6 pt-1">
-        <div className="flex items-center gap-2 font-display font-bold text-[18px] text-slate-900">
-          <span className="text-cyan-500">☁</span> CloudFlip
-        </div>
+        <CloudFlipLogo size={26} textSize="text-[18px]" />
         {onClose && (
           <button
             type="button"

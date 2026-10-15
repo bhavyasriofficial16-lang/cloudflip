@@ -1,6 +1,7 @@
 import { FormEvent, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import CloudFlipLogo from "../components/CloudFlipLogo";
 
 export default function AuthForm({ mode }: { mode: "login" | "signup" }) {
   const { signIn, signUp, configured, authProvider } = useAuth();
@@ -27,8 +28,8 @@ export default function AuthForm({ mode }: { mode: "login" | "signup" }) {
   return (
     <div className="min-h-screen flex items-center justify-center px-6 bg-white text-slate-900 font-sans">
       <div className="w-full max-w-[380px]">
-        <Link to="/" className="flex items-center gap-2 font-display font-bold text-[19px] justify-center mb-8 text-slate-900">
-          <span className="text-cyan-500">☁</span> CloudFlip
+        <Link to="/" className="flex justify-center mb-8">
+          <CloudFlipLogo size={32} textSize="text-[21px]" />
         </Link>
 
         <div className="bg-white border border-slate-200 rounded-xl p-7 shadow-sm">

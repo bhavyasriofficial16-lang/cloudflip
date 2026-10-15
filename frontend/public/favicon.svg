@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" fill="none">
+  <defs>
+    <linearGradient id="cloudGrad" x1="6" y1="8" x2="42" y2="40" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#06B6D4" />
+      <stop offset="50%" stop-color="#3B82F6" />
+      <stop offset="100%" stop-color="#1D4ED8" />
+    </linearGradient>
+    <linearGradient id="flipSpark" x1="18" y1="14" x2="32" y2="34" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#38BDF8" />
+      <stop offset="100%" stop-color="#67E8F9" />
+    </linearGradient>
+    <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#06B6D4" flood-opacity="0.35" />
+    </filter>
+  </defs>
+
+  <!-- Modern Rounded Squircle Container -->
+  <rect width="48" height="48" rx="12" fill="#0A111F" />
+
+  <!-- Cloud Body with predictive glow -->
+  <path d="M16 34C12.6863 34 10 31.3137 10 28C10 24.897 12.3556 22.3424 15.3986 22.0348C16.1478 17.5147 20.0827 14 24.8 14C29.0768 14 32.7118 16.8837 33.8646 20.8038C36.7869 21.2828 39 23.8344 39 27C39 30.866 35.866 34 32 34H16Z" 
+        fill="url(#cloudGrad)" 
+        filter="url(#glow)" />
+
+  <!-- The "Flip" Loop / Forward Pulse Dynamic Vector -->
+  <path d="M22 21L27.5 25.5L22 30" 
+        stroke="white" 
+        stroke-width="2.5" 
+        stroke-linecap="round" 
+        stroke-linejoin="round" />
+  
+  <path d="M17 25.5H27" 
+        stroke="white" 
+        stroke-width="2.5" 
+        stroke-linecap="round" />
+        
+  <!-- Subtle Predictive Dot -->
+  <circle cx="31" cy="25.5" r="1.5" fill="#A5F3FC" />
+</svg>

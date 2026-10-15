@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import CloudFlipLogo from "../components/CloudFlipLogo";
 
 function FlipCard() {
   const [flipped, setFlipped] = useState(false);
@@ -114,8 +115,8 @@ export default function Landing() {
       {/* Header */}
       <header className="sticky top-0 z-50 backdrop-blur bg-white/95 border-b border-slate-200/80">
         <div className="max-w-[1180px] mx-auto px-4 sm:px-8 h-16 flex items-center justify-between">
-          <Link to="/" className="flex items-center gap-2 font-display font-bold text-[19px] text-slate-900">
-            <span className="text-cyan-500">☁</span> CloudFlip
+          <Link to="/">
+            <CloudFlipLogo size={28} />
           </Link>
           <nav className="hidden md:flex items-center gap-8 text-[14px] text-slate-600 font-medium">
             <button onClick={() => scrollTo("what-is-cloudflip")} className="hover:text-slate-900 transition-colors">
@@ -491,9 +492,7 @@ export default function Landing() {
       {/* Footer */}
       <footer className="border-t border-slate-200 py-8 text-center text-slate-500 text-[12.5px]">
         <div className="max-w-[1180px] mx-auto px-8 flex justify-between items-center">
-          <div className="flex items-center gap-2 font-display font-bold text-[15px] text-slate-900">
-            <span className="text-cyan-500">☁</span> CloudFlip
-          </div>
+          <CloudFlipLogo size={22} textSize="text-[15px]" />
           <div>Demo build · Simulated data unless AWS account connected</div>
         </div>
       </footer>
