@@ -91,7 +91,7 @@ const DEFAULT_PLANS = [
 
 export default function Pricing() {
   const [plans, setPlans] = useState<any[]>(DEFAULT_PLANS);
-  const [region, setRegion] = useState<"IN" | "GLOBAL">("IN"); // Default India / INR
+  const [region, setRegion] = useState<"IN" | "GLOBAL">("GLOBAL"); // Default International / USD
   const [busy, setBusy] = useState<string | null>(null);
   const { session } = useAuth();
   const navigate = useNavigate();
