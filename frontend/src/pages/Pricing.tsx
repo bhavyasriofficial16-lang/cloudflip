@@ -10,6 +10,12 @@ declare global {
   }
 }
 
+const SKYDO_LINKS: Record<string, string> = {
+  pro_monthly: "https://dashboard.skydo.com/pay/pyl_063Z6r",
+  pro_annual: "https://dashboard.skydo.com/pay/pyl_VTvWwu",
+  pay_as_you_go: "https://dashboard.skydo.com/pay/pyl_dDVOjU",
+};
+
 const DEFAULT_PLANS = [
   {
     id: "free",
@@ -115,18 +121,21 @@ export default function Pricing() {
 
   const choose = async (planId: string) => {
     if (planId === "enterprise") {
-      window.location.href = "mailto:sales@cloudflip.ai?subject=CloudFlip.ai%20Enterprise%20Inquiry";
+      window.location.href = "mailto:bhavyasriofficial16@gmail.com?subject=CloudFlip%20Enterprise%20Inquiry";
       return;
     }
     if (planId === "free") {
       navigate(session ? "/app" : "/signup");
       return;
     }
+
+    // Direct 1-click international checkout via Skydo
+    if (region === "GLOBAL" && SKYDO_LINKS[planId]) {
+      window.open(SKYDO_LINKS[planId], "_blank");
+      return;
+    }
+
     if (!session) {
-      if (region === "GLOBAL" && (planId === "pro_monthly" || planId === "pay_as_you_go")) {
-        window.open("https://dashboard.skydo.com/pay/pyl_063Z6r", "_blank");
-        return;
-      }
       navigate("/signup?next=pricing");
       return;
     }
@@ -188,20 +197,13 @@ export default function Pricing() {
       }
     } else {
       // --- International Payment Flow (Skydo USD) ---
-      const SKYDO_PRO_MONTHLY = "https://dashboard.skydo.com/pay/pyl_063Z6r";
-      if (planId === "pro_monthly" || planId === "pay_as_you_go") {
-        window.open(SKYDO_PRO_MONTHLY, "_blank");
+      if (SKYDO_LINKS[planId]) {
+        window.open(SKYDO_LINKS[planId], "_blank");
         setBusy(null);
         return;
       }
-      try {
-        const { checkout_url } = await api.startCheckout(planId);
-        window.location.href = checkout_url;
-      } catch (e: any) {
-        window.open(SKYDO_PRO_MONTHLY, "_blank");
-      } finally {
-        setBusy(null);
-      }
+      window.open(SKYDO_LINKS.pro_monthly, "_blank");
+      setBusy(null);
     }
   };
 
