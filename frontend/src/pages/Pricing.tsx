@@ -122,6 +122,10 @@ export default function Pricing() {
       return;
     }
     if (!session) {
+      if (region === "GLOBAL" && (planId === "pro_monthly" || planId === "pay_as_you_go")) {
+        window.open("https://dashboard.skydo.com/pay/pyl_063Z6r", "_blank");
+        return;
+      }
       navigate("/signup?next=pricing");
       return;
     }
@@ -182,12 +186,18 @@ export default function Pricing() {
         setBusy(null);
       }
     } else {
-      // --- Stripe Payment Flow (International) ---
+      // --- International Payment Flow (Skydo USD) ---
+      const SKYDO_PRO_MONTHLY = "https://dashboard.skydo.com/pay/pyl_063Z6r";
+      if (planId === "pro_monthly" || planId === "pay_as_you_go") {
+        window.open(SKYDO_PRO_MONTHLY, "_blank");
+        setBusy(null);
+        return;
+      }
       try {
         const { checkout_url } = await api.startCheckout(planId);
         window.location.href = checkout_url;
       } catch (e: any) {
-        alert("Stripe Checkout isn't set up yet — please configure your Stripe keys in backend .env.");
+        window.open(SKYDO_PRO_MONTHLY, "_blank");
       } finally {
         setBusy(null);
       }
