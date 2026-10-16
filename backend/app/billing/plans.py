@@ -34,11 +34,11 @@ PLANS = [
         "id": "pay_as_you_go",
         "name": "Pay-As-You-Go",
         "target_customer": "Small Teams & Variable Workloads",
-        "price_inr": "₹15 / resource-hr",
-        "price_usd": "$0.20 / resource-hr",
-        "price_display": "$0.20 / resource-hr (₹15/hr)",
-        "amount_inr": 1500,    # paise
-        "amount_usd": 20,      # cents
+        "price_inr": "₹25 / resource-hr",
+        "price_usd": "$0.30 / resource-hr",
+        "price_display": "$0.30 / resource-hr (₹25/hr)",
+        "amount_inr": 2500,    # paise
+        "amount_usd": 30,      # cents
         "interval": "usage",
         "stripe_price_id": settings.stripe_price_metered,
         "razorpay_plan_id": None,
@@ -55,11 +55,11 @@ PLANS = [
         "id": "pro_monthly",
         "name": "Pro Monthly",
         "target_customer": "Growing Companies",
-        "price_inr": "₹4,999 / mo",
-        "price_usd": "$59 / mo",
-        "price_display": "$59 / mo (₹4,999/mo)",
-        "amount_inr": 499900,  # paise
-        "amount_usd": 5900,    # cents
+        "price_inr": "₹7,999 / mo",
+        "price_usd": "$99 / mo",
+        "price_display": "$99 / mo (₹7,999/mo)",
+        "amount_inr": 799900,  # paise
+        "amount_usd": 9900,    # cents
         "interval": "month",
         "stripe_price_id": settings.stripe_price_monthly,
         "razorpay_plan_id": settings.razorpay_plan_monthly,
@@ -76,11 +76,11 @@ PLANS = [
         "id": "pro_annual",
         "name": "Pro Annual",
         "target_customer": "Established Businesses",
-        "price_inr": "₹49,990 / yr",
-        "price_usd": "$590 / yr",
-        "price_display": "$590 / yr (2 months free)",
-        "amount_inr": 4999000, # paise
-        "amount_usd": 59000,   # cents
+        "price_inr": "₹79,990 / yr",
+        "price_usd": "$990 / yr",
+        "price_display": "$990 / yr (2 months free)",
+        "amount_inr": 7999000, # paise
+        "amount_usd": 99000,   # cents
         "interval": "year",
         "stripe_price_id": settings.stripe_price_annual,
         "razorpay_plan_id": settings.razorpay_plan_annual,

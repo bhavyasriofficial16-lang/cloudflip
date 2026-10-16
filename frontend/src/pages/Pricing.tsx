@@ -36,9 +36,9 @@ const DEFAULT_PLANS = [
     id: "pay_as_you_go",
     name: "Pay-As-You-Go",
     target_customer: "Small Teams & Variable Workloads",
-    price_inr: "₹15 / resource-hr",
-    price_usd: "$0.20 / resource-hr",
-    price_display: "$0.20 / resource-hr (₹15/hr)",
+    price_inr: "₹25 / resource-hr",
+    price_usd: "$0.30 / resource-hr",
+    price_display: "$0.30 / resource-hr (₹25/hr)",
     features: [
       "Zero friction to start",
       "Scales automatically with client growth",
@@ -51,9 +51,9 @@ const DEFAULT_PLANS = [
     id: "pro_monthly",
     name: "Pro Monthly",
     target_customer: "Growing Companies",
-    price_inr: "₹4,999 / mo",
-    price_usd: "$59 / mo",
-    price_display: "$59 / mo (₹4,999/mo)",
+    price_inr: "₹7,999 / mo",
+    price_usd: "$99 / mo",
+    price_display: "$99 / mo (₹7,999/mo)",
     features: [
       "Predictable MRR (Monthly Recurring Revenue)",
       "Real AWS & Multi-Cloud connection",
@@ -66,9 +66,9 @@ const DEFAULT_PLANS = [
     id: "pro_annual",
     name: "Pro Annual",
     target_customer: "Established Businesses",
-    price_inr: "₹49,990 / yr",
-    price_usd: "$590 / yr",
-    price_display: "$590 / yr (2 months free)",
+    price_inr: "₹79,990 / yr",
+    price_usd: "$990 / yr",
+    price_display: "$990 / yr (2 months free)",
     badge: "2 months free",
     features: [
       "Upfront annual cash flow & lower churn",
@@ -340,19 +340,19 @@ export default function Pricing() {
                 <tr className="hover:bg-slate-50/50">
                   <td className="p-3.5 font-semibold text-slate-900">Pay-As-You-Go</td>
                   <td className="p-3.5 text-slate-600">Small Teams & Variable Workloads</td>
-                  <td className="p-3.5 font-mono">$0.20 / resource-hour (₹15/hr)</td>
+                  <td className="p-3.5 font-mono">$0.30 / resource-hour (₹25/hr)</td>
                   <td className="p-3.5 font-medium text-sky-700 bg-sky-50/50">Zero friction to start, scales with client growth.</td>
                 </tr>
                 <tr className="hover:bg-slate-50/50">
                   <td className="p-3.5 font-semibold text-slate-900">Pro Monthly</td>
                   <td className="p-3.5 text-slate-600">Growing Companies</td>
-                  <td className="p-3.5 font-mono">$59 / mo (₹4,999/mo)</td>
+                  <td className="p-3.5 font-mono">$99 / mo (₹7,999/mo)</td>
                   <td className="p-3.5 font-medium text-purple-700 bg-purple-50/50">Predictable MRR (Monthly Recurring Revenue).</td>
                 </tr>
                 <tr className="hover:bg-slate-50/50">
                   <td className="p-3.5 font-semibold text-slate-900">Pro Annual</td>
                   <td className="p-3.5 text-slate-600">Established Businesses</td>
-                  <td className="p-3.5 font-mono">$590 / yr (2 months free)</td>
+                  <td className="p-3.5 font-mono">$990 / yr (2 months free)</td>
                   <td className="p-3.5 font-medium text-amber-700 bg-amber-50/50">Upfront annual cash flow & lower churn.</td>
                 </tr>
                 <tr className="hover:bg-slate-50/50">

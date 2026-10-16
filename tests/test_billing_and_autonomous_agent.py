@@ -25,13 +25,13 @@ def test_plans_dual_currency_catalog():
     assert pro_m is not None
     assert "price_inr" in pro_m
     assert "price_usd" in pro_m
-    assert pro_m["price_inr"] == "₹4,999 / mo"
-    assert pro_m["price_usd"] == "$59 / mo"
+    assert pro_m["price_inr"] == "₹7,999 / mo"
+    assert pro_m["price_usd"] == "$99 / mo"
 
 
 def test_razorpay_client_demo_order():
-    order = razorpay_client.create_order(amount_in_paise=499900, currency="INR")
-    assert order["amount"] == 499900
+    order = razorpay_client.create_order(amount_in_paise=799900, currency="INR")
+    assert order["amount"] == 799900
     assert order["currency"] == "INR"
     assert "id" in order
 
