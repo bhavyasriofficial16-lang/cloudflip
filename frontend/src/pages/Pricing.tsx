@@ -11,9 +11,9 @@ declare global {
 }
 
 const SKYDO_LINKS: Record<string, string> = {
-  pro_monthly: "https://dashboard.skydo.com/pay/pyl_063Z6r",
-  pro_annual: "https://dashboard.skydo.com/pay/pyl_VTvWwu",
-  pay_as_you_go: "https://dashboard.skydo.com/pay/pyl_dDVOjU",
+  pro_monthly: "https://dashboard.skydo.com/pay/pyl_Mq6TLV",
+  pro_annual: "https://dashboard.skydo.com/pay/pyl_2RJ0Dz",
+  pay_as_you_go: "https://dashboard.skydo.com/pay/pyl_aXN9Hm",
 };
 
 const DEFAULT_PLANS = [
