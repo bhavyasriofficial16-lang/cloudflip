@@ -23,7 +23,7 @@ class SimulationOutcome:
 
 # Documented assumption — replace with a measured value per instance type
 # once real CloudWatch history exists (see docs/ARCHITECTURE.md).
-DEFAULT_COST_PER_INSTANCE_HOUR = 11.8   # e.g. an m6i.large on-demand rate, ap-south-1, in the deployment's currency
+DEFAULT_COST_PER_INSTANCE_HOUR = 0.17   # e.g. c6i.xlarge on-demand rate, us-east-1 ($0.17/hr)
 
 
 def run_simulation(

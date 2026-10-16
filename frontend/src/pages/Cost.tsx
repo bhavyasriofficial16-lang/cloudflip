@@ -2,8 +2,8 @@ import { useEffect, useState } from "react";
 import { api } from "../api/client";
 
 const DEMO_COST = [
-  { strategy: "current_baseline", resource_count: 4, predicted_errors: "3.8%", estimated_cost_per_hour: 142, assumptions: { source: "AWS Public Pricing API", region: "ap-south-1" } },
-  { strategy: "cloudflip_predictive", resource_count: 12, predicted_errors: "0.0%", estimated_cost_per_hour: 284, assumptions: { source: "AWS Public Pricing API", region: "ap-south-1" } },
+  { strategy: "current_baseline", resource_count: 4, predicted_errors: "3.8%", estimated_cost_per_hour: 0.68, assumptions: { source: "AWS Public Pricing API", region: "us-east-1" } },
+  { strategy: "cloudflip_predictive", resource_count: 12, predicted_errors: "0.0%", estimated_cost_per_hour: 2.04, assumptions: { source: "AWS Public Pricing API", region: "us-east-1" } },
 ];
 
 export default function Cost() {
@@ -45,7 +45,7 @@ export default function Cost() {
                 </div>
                 <div className="flex justify-between py-1.5 text-slate-600">
                   <span>Est. Hourly Cost</span>
-                  <span className="font-bold text-sky-600">₹{r.estimated_cost_per_hour}/hr</span>
+                  <span className="font-bold text-sky-600">${r.estimated_cost_per_hour}/hr</span>
                 </div>
               </div>
             </div>
@@ -54,7 +54,7 @@ export default function Cost() {
 
         {rows[0] && (
           <p className="text-[12px] text-slate-500 font-mono mt-5 pt-4 border-t border-slate-100">
-            ℹ️ Cost estimates derived from {rows[0].assumptions?.source || "AWS Public Pricing API"} for region {rows[0].assumptions?.region || "ap-south-1"}.
+            ℹ️ Cost estimates derived from {rows[0].assumptions?.source || "AWS Public Pricing API"} for region {rows[0].assumptions?.region || "us-east-1"}.
           </p>
         )}
       </div>

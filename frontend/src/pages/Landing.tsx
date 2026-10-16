@@ -425,10 +425,10 @@ export default function Landing() {
                 View Archived DOI Paper ↗
               </a>
               <Link
-                to="/app/simulator"
+                to="/simulator"
                 className="bg-slate-800 hover:bg-slate-700 text-white border border-slate-700 text-[13px] font-medium px-4 py-2.5 rounded-lg transition-colors text-center"
               >
-                Test Mathematical Equations
+                Launch Interactive Surge Simulator ⚡
               </Link>
             </div>
           </div>

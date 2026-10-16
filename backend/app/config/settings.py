@@ -37,7 +37,7 @@ class Settings(BaseSettings):
     free_plan_resource_limit: int = 3
 
     use_real_aws: bool = False
-    aws_region: str = "ap-south-1"
+    aws_region: str = "us-east-1"
     aws_access_key_id: str = ""
     aws_secret_access_key: str = ""
     aws_role_arn: str = ""

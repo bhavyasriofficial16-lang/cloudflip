@@ -7,14 +7,14 @@ import { Card } from "../components/ui";
 export default function Settings() {
   const { user, session, signOut, authProvider } = useAuth();
   const [sub, setSub] = useState<any>(null);
-  const [awsStatus, setAwsStatus] = useState<any>({ connected: false, region: "ap-south-1", simulation_only_mode: true });
+  const [awsStatus, setAwsStatus] = useState<any>({ connected: false, region: "us-east-1", simulation_only_mode: true });
   const [azureStatus, setAzureStatus] = useState<any>({ connected: false, region: "centralindia" });
   const [showAwsModal, setShowAwsModal] = useState(false);
   const [authType, setAuthType] = useState<"cloudformation" | "role" | "keys" | "azure">("cloudformation");
   const [roleArn, setRoleArn] = useState("");
   const [accessKeyId, setAccessKeyId] = useState("");
   const [secretAccessKey, setSecretAccessKey] = useState("");
-  const [region, setRegion] = useState("ap-south-1");
+  const [region, setRegion] = useState("us-east-1");
   const [azureSubId, setAzureSubId] = useState("");
   const [azureTenantId, setAzureTenantId] = useState("");
   const [azureClientId, setAzureClientId] = useState("");
@@ -429,10 +429,10 @@ export default function Settings() {
                     onChange={(e) => setRegion(e.target.value)}
                     className="w-full bg-slate-50 border border-slate-300 rounded-lg px-3 py-2 text-[13.5px] text-slate-900 focus:outline-none focus:border-sky-500"
                   >
-                    <option value="ap-south-1">ap-south-1 (Asia Pacific - Mumbai)</option>
                     <option value="us-east-1">us-east-1 (US East - N. Virginia)</option>
                     <option value="us-west-2">us-west-2 (US West - Oregon)</option>
                     <option value="eu-west-1">eu-west-1 (Europe - Ireland)</option>
+                    <option value="ap-south-1">ap-south-1 (Asia Pacific - Mumbai)</option>
                     <option value="ap-southeast-1">ap-southeast-1 (Singapore)</option>
                   </select>
                 </div>

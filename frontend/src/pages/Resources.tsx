@@ -2,11 +2,11 @@ import { useEffect, useState } from "react";
 import { api } from "../api/client";
 
 const DEMO_RESOURCES = [
-  { id: "1", name: "web-asg-1", resource_type: "Auto Scaling Group", region: "ap-south-1", status: "warning", tags: { env: "prod", app: "web" } },
-  { id: "2", name: "orders-rds", resource_type: "RDS PostgreSQL", region: "ap-south-1", status: "healthy", tags: { env: "prod", app: "database" } },
-  { id: "3", name: "payment-sqs", resource_type: "SQS Queue", region: "ap-south-1", status: "healthy", tags: { env: "prod", app: "queue" } },
-  { id: "4", name: "alb-frontend", resource_type: "Application Load Balancer", region: "ap-south-1", status: "healthy", tags: { env: "prod" } },
-  { id: "5", name: "cache-redis", resource_type: "ElastiCache Redis", region: "ap-south-1", status: "healthy", tags: { env: "prod" } },
+  { id: "1", name: "web-asg-1", resource_type: "Auto Scaling Group", region: "us-east-1", status: "warning", tags: { env: "prod", app: "web" } },
+  { id: "2", name: "orders-rds", resource_type: "RDS PostgreSQL", region: "us-east-1", status: "healthy", tags: { env: "prod", app: "database" } },
+  { id: "3", name: "payment-sqs", resource_type: "SQS Queue", region: "us-east-1", status: "healthy", tags: { env: "prod", app: "queue" } },
+  { id: "4", name: "alb-frontend", resource_type: "Application Load Balancer", region: "us-east-1", status: "healthy", tags: { env: "prod" } },
+  { id: "5", name: "cache-redis", resource_type: "ElastiCache Redis", region: "us-east-1", status: "healthy", tags: { env: "prod" } },
 ];
 
 export default function Resources() {

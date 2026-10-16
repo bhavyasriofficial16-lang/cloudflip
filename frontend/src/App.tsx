@@ -1,4 +1,4 @@
-import { Routes, Route, useLocation } from "react-router-dom";
+import { Routes, Route, useLocation, Navigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import Sidebar from "./components/Sidebar";
 import Topbar from "./components/Topbar";
@@ -89,9 +89,12 @@ export default function App() {
       <Routes>
         <Route path="/" element={<Landing />} />
         <Route path="/pricing" element={<Pricing />} />
+        <Route path="/simulator" element={<Navigate to="/app/simulator" replace />} />
+        <Route path="/demo" element={<Navigate to="/app/simulator" replace />} />
         <Route path="/login" element={<AuthForm mode="login" />} />
         <Route path="/signup" element={<AuthForm mode="signup" />} />
         <Route path="/app/*" element={<AppShell />} />
+        <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </AuthProvider>
   );
