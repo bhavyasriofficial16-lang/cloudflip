@@ -27,7 +27,7 @@ class AWSClient:
         """
         import boto3
 
-        target_region = region or settings.aws_region or "ap-south-1"
+        target_region = region or settings.aws_region or "us-east-1"
         target_role = role_arn or settings.aws_role_arn
 
         if target_role:
@@ -64,7 +64,7 @@ class AWSClient:
         """
         import boto3
 
-        target_region = region or settings.aws_region or "ap-south-1"
+        target_region = region or settings.aws_region or "us-east-1"
         key_id = access_key_id or settings.aws_access_key_id or None
         secret_key = secret_access_key or settings.aws_secret_access_key or None
         arn = role_arn or settings.aws_role_arn or None
