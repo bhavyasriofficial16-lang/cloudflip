@@ -18,6 +18,10 @@ import Cost from "./pages/Cost";
 import Activity from "./pages/Activity";
 import Settings from "./pages/Settings";
 import LiveMetrics from "./pages/LiveMetrics";
+import Security from "./pages/Security";
+import Compare from "./pages/Compare";
+import Terms from "./pages/Terms";
+import Privacy from "./pages/Privacy";
 import { AuthProvider } from "./context/AuthContext";
 import { api } from "./api/client";
 
@@ -89,6 +93,10 @@ export default function App() {
       <Routes>
         <Route path="/" element={<Landing />} />
         <Route path="/pricing" element={<Pricing />} />
+        <Route path="/security" element={<Security />} />
+        <Route path="/compare" element={<Compare />} />
+        <Route path="/terms" element={<Terms />} />
+        <Route path="/privacy" element={<Privacy />} />
         <Route path="/simulator" element={<Navigate to="/app/simulator" replace />} />
         <Route path="/demo" element={<Navigate to="/app/simulator" replace />} />
         <Route path="/predictions" element={<Navigate to="/app/predictions" replace />} />

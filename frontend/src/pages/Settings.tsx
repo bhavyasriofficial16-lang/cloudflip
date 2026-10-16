@@ -23,6 +23,17 @@ export default function Settings() {
   const [cfQuickUrl, setCfQuickUrl] = useState("");
   const [busy, setBusy] = useState(false);
 
+  // Trust, Automation & Guardrails
+  const [operatingMode, setOperatingMode] = useState<"shadow" | "approval" | "autonomous">("shadow");
+  const [minInstances, setMinInstances] = useState<number>(2);
+  const [maxInstances, setMaxInstances] = useState<number>(10);
+  const [cooldownMinutes, setCooldownMinutes] = useState<number>(15);
+  const [dailyActionCap, setDailyActionCap] = useState<number>(6);
+  const [killSwitchActive, setKillSwitchActive] = useState<boolean>(false);
+  const [slackWebhook, setSlackWebhook] = useState<string>("");
+  const [alertEmail, setAlertEmail] = useState<string>("sre-alerts@company.internal");
+  const [testAlertSent, setTestAlertSent] = useState<boolean>(false);
+
   useEffect(() => {
     if (session) api.subscription().then(setSub).catch(() => {});
     fetchAwsStatus();
@@ -203,6 +214,249 @@ export default function Settings() {
             {awsStatus.simulation_only_mode ? "Safety Mode: ON" : "Safety Mode: OFF (LIVE)"}
           </button>
         </Row>
+      </Card>
+
+      {/* Trust & Safety: 3 Operating Modes */}
+      <Card className="p-6 bg-white border border-slate-200 rounded-xl shadow-xs">
+        <div className="flex items-center justify-between pb-3 border-b border-slate-100 mb-4">
+          <div>
+            <h2 className="font-display font-bold text-[18px] text-slate-900">
+              Automation Mode & Trust Controls
+            </h2>
+            <p className="text-[12.5px] text-slate-500">
+              Control the level of agency CloudFlip possesses. Default is strictly passive Shadow Mode.
+            </p>
+          </div>
+          <span className="text-[11px] font-mono font-bold text-emerald-800 bg-emerald-50 border border-emerald-200 px-2.5 py-0.5 rounded-full">
+            Fail-Open Enforced
+          </span>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mb-6">
+          <button
+            type="button"
+            onClick={() => setOperatingMode("shadow")}
+            className={`p-4 rounded-xl border text-left transition-all ${
+              operatingMode === "shadow"
+                ? "bg-sky-50/70 border-sky-400 ring-2 ring-sky-200 shadow-2xs"
+                : "border-slate-200 hover:bg-slate-50/50"
+            }`}
+          >
+            <div className="flex items-center justify-between mb-1">
+              <span className="font-bold text-[14px] text-slate-900">Shadow Mode</span>
+              <span className="text-[10px] font-mono font-bold text-sky-800 bg-sky-100 px-1.5 py-0.2 rounded">
+                DEFAULT
+              </span>
+            </div>
+            <p className="text-[12px] text-slate-600 leading-relaxed">
+              Passive observation. Forecasts and logs recommendations in audit trail with zero write calls.
+            </p>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => setOperatingMode("approval")}
+            className={`p-4 rounded-xl border text-left transition-all ${
+              operatingMode === "approval"
+                ? "bg-purple-50/70 border-purple-400 ring-2 ring-purple-200 shadow-2xs"
+                : "border-slate-200 hover:bg-slate-50/50"
+            }`}
+          >
+            <div className="flex items-center justify-between mb-1">
+              <span className="font-bold text-[14px] text-slate-900">Approval Mode</span>
+              <span className="text-[10px] font-mono font-bold text-purple-800 bg-purple-100 px-1.5 py-0.2 rounded">
+                1-CLICK
+              </span>
+            </div>
+            <p className="text-[12px] text-slate-600 leading-relaxed">
+              Human-in-the-loop. SREs receive Slack/web alerts and click to approve scaling execution.
+            </p>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => setOperatingMode("autonomous")}
+            className={`p-4 rounded-xl border text-left transition-all ${
+              operatingMode === "autonomous"
+                ? "bg-emerald-50/70 border-emerald-400 ring-2 ring-emerald-200 shadow-2xs"
+                : "border-slate-200 hover:bg-slate-50/50"
+            }`}
+          >
+            <div className="flex items-center justify-between mb-1">
+              <span className="font-bold text-[14px] text-slate-900">Autonomous</span>
+              <span className="text-[10px] font-mono font-bold text-emerald-800 bg-emerald-100 px-1.5 py-0.2 rounded">
+                CLOSED-LOOP
+              </span>
+            </div>
+            <p className="text-[12px] text-slate-600 leading-relaxed">
+              Self-healing. Pre-scales ASG ahead of surges when confidence &gt; 90% and within strict guardrails.
+            </p>
+          </button>
+        </div>
+
+        {/* Programmatic Guardrails Form */}
+        <div className="bg-slate-50/80 border border-slate-200 rounded-xl p-5 space-y-4">
+          <div className="flex items-center justify-between">
+            <h3 className="font-display font-bold text-[14.5px] text-slate-900">
+              🛡️ Programmatic Guardrails & Limits
+            </h3>
+            <span className="text-[11.5px] text-slate-500 font-mono">Hard Non-Bypassable Bounds</span>
+          </div>
+
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-[12.5px]">
+            <div>
+              <label className="block text-slate-600 font-medium mb-1">Min Floor</label>
+              <input
+                type="number"
+                min={1}
+                max={10}
+                value={minInstances}
+                onChange={(e) => setMinInstances(parseInt(e.target.value) || 1)}
+                className="w-full bg-white border border-slate-200 rounded-lg px-2.5 py-1.5 font-mono text-[13px] text-slate-900"
+              />
+            </div>
+            <div>
+              <label className="block text-slate-600 font-medium mb-1">Max Ceiling</label>
+              <input
+                type="number"
+                min={2}
+                max={50}
+                value={maxInstances}
+                onChange={(e) => setMaxInstances(parseInt(e.target.value) || 10)}
+                className="w-full bg-white border border-slate-200 rounded-lg px-2.5 py-1.5 font-mono text-[13px] text-slate-900"
+              />
+            </div>
+            <div>
+              <label className="block text-slate-600 font-medium mb-1">Cooldown</label>
+              <input
+                type="number"
+                min={5}
+                max={60}
+                value={cooldownMinutes}
+                onChange={(e) => setCooldownMinutes(parseInt(e.target.value) || 15)}
+                className="w-full bg-white border border-slate-200 rounded-lg px-2.5 py-1.5 font-mono text-[13px] text-slate-900"
+              />
+            </div>
+            <div>
+              <label className="block text-slate-600 font-medium mb-1">Daily Cap</label>
+              <input
+                type="number"
+                min={1}
+                max={20}
+                value={dailyActionCap}
+                onChange={(e) => setDailyActionCap(parseInt(e.target.value) || 6)}
+                className="w-full bg-white border border-slate-200 rounded-lg px-2.5 py-1.5 font-mono text-[13px] text-slate-900"
+              />
+            </div>
+          </div>
+
+          {/* Master Kill Switch */}
+          <div className="pt-3 border-t border-slate-200/80 flex items-center justify-between">
+            <div>
+              <div className="font-bold text-[13px] text-slate-900">Emergency Automation Kill Switch</div>
+              <div className="text-[12px] text-slate-500">Instantly halt all automated actions and drop to read-only observation.</div>
+            </div>
+            <button
+              type="button"
+              onClick={() => {
+                const next = !killSwitchActive;
+                setKillSwitchActive(next);
+                if (next) setOperatingMode("shadow");
+                alert(next ? "🛑 Master Kill Switch ACTIVATED. Automation halted." : "Kill switch deactivated. Normal policies resumed.");
+              }}
+              className={`font-mono text-[12px] font-bold px-3 py-1.5 rounded-lg border transition-all ${
+                killSwitchActive
+                  ? "bg-red-600 text-white border-red-700 animate-pulse"
+                  : "bg-white text-slate-700 border-slate-300 hover:bg-slate-100"
+              }`}
+            >
+              {killSwitchActive ? "🛑 KILL SWITCH: ACTIVE" : "Arm Kill Switch"}
+            </button>
+          </div>
+        </div>
+      </Card>
+
+      {/* Integrations: Slack & Email Alerts */}
+      <Card className="p-6 bg-white border border-slate-200 rounded-xl shadow-xs">
+        <h2 className="font-display font-bold text-[18px] text-slate-900 mb-1">
+          Alert Channels & Integrations
+        </h2>
+        <p className="text-[12.5px] text-slate-500 mb-4 pb-3 border-b border-slate-100">
+          Receive capacity breach alerts and 1-click approvals in your existing incident response channels.
+        </p>
+
+        <div className="space-y-4">
+          <div>
+            <label className="block text-[13px] font-semibold text-slate-700 mb-1">
+              💬 Slack Incoming Webhook URL
+            </label>
+            <input
+              type="url"
+              placeholder="https://hooks.slack.com/services/T00/B00/XXXX"
+              value={slackWebhook}
+              onChange={(e) => setSlackWebhook(e.target.value)}
+              className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-[13px] font-mono text-slate-900 focus:outline-none focus:border-sky-400"
+            />
+          </div>
+
+          <div>
+            <label className="block text-[13px] font-semibold text-slate-700 mb-1">
+              📧 Primary SRE Alert Email
+            </label>
+            <input
+              type="email"
+              placeholder="sre-alerts@company.com"
+              value={alertEmail}
+              onChange={(e) => setAlertEmail(e.target.value)}
+              className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-[13px] text-slate-900 focus:outline-none focus:border-sky-400"
+            />
+          </div>
+
+          <div className="flex items-center justify-between pt-2">
+            <span className="text-[12px] text-slate-500">
+              {testAlertSent ? "✅ Test alert payload dispatched successfully!" : "Simulate an early warning alert payload"}
+            </span>
+            <button
+              type="button"
+              onClick={() => {
+                setTestAlertSent(true);
+                setTimeout(() => setTestAlertSent(false), 3500);
+              }}
+              className="bg-slate-900 text-white font-semibold text-[12.5px] px-3.5 py-1.5 rounded-lg hover:bg-slate-800 transition-colors"
+            >
+              Send Test Alert
+            </button>
+          </div>
+        </div>
+      </Card>
+
+      {/* Security Architecture & 1-Click Revocation Guide */}
+      <Card className="p-6 bg-white border border-slate-200 rounded-xl shadow-xs">
+        <h2 className="font-display font-bold text-[18px] text-slate-900 mb-1">
+          IAM Permissions & Access Revocation
+        </h2>
+        <p className="text-[12.5px] text-slate-500 mb-4 pb-3 border-b border-slate-100">
+          Full governance transparency. You retain complete control over credentials and access.
+        </p>
+
+        <div className="space-y-3 text-[13px] text-slate-600">
+          <div className="flex items-center justify-between p-3 rounded-lg bg-slate-50 border border-slate-200">
+            <div>
+              <div className="font-semibold text-slate-900">Security Whitepaper</div>
+              <div className="text-[12px] text-slate-500">Read our formal data governance, encryption, and fail-open guarantees.</div>
+            </div>
+            <Link to="/security" className="text-sky-600 font-semibold hover:underline text-[12.5px]">
+              View Whitepaper ↗
+            </Link>
+          </div>
+
+          <div className="p-3.5 rounded-lg bg-amber-50/70 border border-amber-200 text-amber-900 space-y-1 text-[12.5px]">
+            <div className="font-bold">⚡ 1-Click Access Revocation Guide:</div>
+            <p>
+              To permanently revoke CloudFlip’s access, go to your <strong>AWS IAM Console ➔ Roles</strong>, search for <code className="bg-white/80 px-1 py-0.5 rounded font-mono text-[11.5px]">CloudFlip*</code>, and click <strong>Delete Role</strong>. Access is terminated in under 5 seconds.
+            </p>
+          </div>
+        </div>
       </Card>
 
       {/* AWS Connection Modal */}

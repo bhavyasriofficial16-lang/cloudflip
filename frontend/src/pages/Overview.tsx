@@ -17,6 +17,30 @@ export default function Overview() {
     { time: "24m", current: null, predicted: 31800 },
   ]);
 
+  // 10-Minute Pilot Readiness Checklist State
+  const [checklist, setChecklist] = useState<Record<string, boolean>>(() => {
+    try {
+      const saved = localStorage.getItem("cloudflip_readiness_checklist");
+      return saved ? JSON.parse(saved) : { step1: true, step2: false, step3: false, step4: false, step5: false };
+    } catch {
+      return { step1: true, step2: false, step3: false, step4: false, step5: false };
+    }
+  });
+  const [checklistOpen, setChecklistOpen] = useState(true);
+
+  const toggleChecklistItem = (id: string) => {
+    setChecklist((prev) => {
+      const next = { ...prev, [id]: !prev[id] };
+      try {
+        localStorage.setItem("cloudflip_readiness_checklist", JSON.stringify(next));
+      } catch {}
+      return next;
+    });
+  };
+
+  const completedSteps = Object.values(checklist).filter(Boolean).length;
+  const progressPercent = Math.round((completedSteps / 5) * 100);
+
   const fetchDaemon = () => {
     api.getDaemonStatus().then(setDaemon).catch(() => {});
   };
@@ -139,6 +163,209 @@ export default function Overview() {
             {daemon.status === "RUNNING" ? "Pause" : "Resume"}
           </button>
         </div>
+      </div>
+
+      {/* P0: 10-Minute Pilot Readiness Checklist */}
+      <div className="bg-white border border-slate-200 rounded-xl p-5 shadow-xs">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-slate-100">
+          <div>
+            <div className="flex items-center gap-2 mb-0.5">
+              <h3 className="font-display font-bold text-[16px] text-slate-900">
+                10-Minute Pilot Readiness Checklist
+              </h3>
+              <span className="text-[10.5px] font-mono font-bold text-sky-800 bg-sky-50 border border-sky-200 px-2 py-0.2 rounded-full">
+                PILOT ONBOARDING
+              </span>
+            </div>
+            <p className="text-[12.5px] text-slate-500">
+              Clear path to Day-1 value: validate predictions, audit idle waste, and enforce fail-open guardrails.
+            </p>
+          </div>
+
+          <div className="flex items-center gap-3">
+            <div className="text-right">
+              <div className="text-[12px] font-mono font-bold text-slate-900">
+                {completedSteps} / 5 Steps Complete
+              </div>
+              <div className="w-32 bg-slate-100 h-1.5 rounded-full overflow-hidden mt-1">
+                <div
+                  className="bg-emerald-500 h-full transition-all duration-300 rounded-full"
+                  style={{ width: `${progressPercent}%` }}
+                />
+              </div>
+            </div>
+            <button
+              onClick={() => setChecklistOpen(!checklistOpen)}
+              className="text-[12px] text-slate-500 hover:text-slate-800 px-2.5 py-1 rounded border border-slate-200 hover:bg-slate-50 transition-colors"
+            >
+              {checklistOpen ? "Collapse" : "Expand"}
+            </button>
+          </div>
+        </div>
+
+        {checklistOpen && (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3 pt-4">
+            {/* Step 1 */}
+            <div
+              onClick={() => toggleChecklistItem("step1")}
+              className={`p-3.5 rounded-xl border transition-all cursor-pointer flex items-start gap-3 ${
+                checklist.step1 ? "bg-emerald-50/40 border-emerald-200" : "bg-slate-50/50 border-slate-200 hover:bg-slate-50"
+              }`}
+            >
+              <input
+                type="checkbox"
+                checked={checklist.step1}
+                onChange={() => {}}
+                className="mt-0.5 rounded text-emerald-600 focus:ring-emerald-500 cursor-pointer"
+              />
+              <div className="flex-1 text-[12.5px]">
+                <div className="flex items-center justify-between">
+                  <span className={`font-semibold ${checklist.step1 ? "line-through text-slate-500" : "text-slate-900"}`}>
+                    1. Explore SRE Simulator & Curves
+                  </span>
+                  <Link
+                    to="/simulator"
+                    onClick={(e) => e.stopPropagation()}
+                    className="text-[11.5px] text-sky-600 hover:text-sky-800 font-semibold"
+                  >
+                    Open Simulator →
+                  </Link>
+                </div>
+                <p className="text-[11.5px] text-slate-500 mt-0.5">
+                  Test non-linear presets (Ticket Drop, Flash Sale) and observe the capacity breach line.
+                </p>
+              </div>
+            </div>
+
+            {/* Step 2 */}
+            <div
+              onClick={() => toggleChecklistItem("step2")}
+              className={`p-3.5 rounded-xl border transition-all cursor-pointer flex items-start gap-3 ${
+                checklist.step2 ? "bg-emerald-50/40 border-emerald-200" : "bg-slate-50/50 border-slate-200 hover:bg-slate-50"
+              }`}
+            >
+              <input
+                type="checkbox"
+                checked={checklist.step2}
+                onChange={() => {}}
+                className="mt-0.5 rounded text-emerald-600 focus:ring-emerald-500 cursor-pointer"
+              />
+              <div className="flex-1 text-[12.5px]">
+                <div className="flex items-center justify-between">
+                  <span className={`font-semibold ${checklist.step2 ? "line-through text-slate-500" : "text-slate-900"}`}>
+                    2. Inspect Empirical Public Traces
+                  </span>
+                  <Link
+                    to="/predictions"
+                    onClick={(e) => e.stopPropagation()}
+                    className="text-[11.5px] text-sky-600 hover:text-sky-800 font-semibold"
+                  >
+                    View Backtests →
+                  </Link>
+                </div>
+                <p className="text-[11.5px] text-slate-500 mt-0.5">
+                  Verify walk-forward MAPE (&lt;5%) and lead-time accuracy on NASA & AWS CloudWatch traces.
+                </p>
+              </div>
+            </div>
+
+            {/* Step 3 */}
+            <div
+              onClick={() => toggleChecklistItem("step3")}
+              className={`p-3.5 rounded-xl border transition-all cursor-pointer flex items-start gap-3 ${
+                checklist.step3 ? "bg-emerald-50/40 border-emerald-200" : "bg-slate-50/50 border-slate-200 hover:bg-slate-50"
+              }`}
+            >
+              <input
+                type="checkbox"
+                checked={checklist.step3}
+                onChange={() => {}}
+                className="mt-0.5 rounded text-emerald-600 focus:ring-emerald-500 cursor-pointer"
+              />
+              <div className="flex-1 text-[12.5px]">
+                <div className="flex items-center justify-between">
+                  <span className={`font-semibold ${checklist.step3 ? "line-through text-slate-500" : "text-slate-900"}`}>
+                    3. Run FinOps Account Waste Scan
+                  </span>
+                  <Link
+                    to="/cost"
+                    onClick={(e) => e.stopPropagation()}
+                    className="text-[11.5px] text-sky-600 hover:text-sky-800 font-semibold"
+                  >
+                    Run Scan →
+                  </Link>
+                </div>
+                <p className="text-[11.5px] text-slate-500 mt-0.5">
+                  Audit idle EC2 nodes, unattached EBS, and over-provisioned RDS for immediate $668/mo savings.
+                </p>
+              </div>
+            </div>
+
+            {/* Step 4 */}
+            <div
+              onClick={() => toggleChecklistItem("step4")}
+              className={`p-3.5 rounded-xl border transition-all cursor-pointer flex items-start gap-3 ${
+                checklist.step4 ? "bg-emerald-50/40 border-emerald-200" : "bg-slate-50/50 border-slate-200 hover:bg-slate-50"
+              }`}
+            >
+              <input
+                type="checkbox"
+                checked={checklist.step4}
+                onChange={() => {}}
+                className="mt-0.5 rounded text-emerald-600 focus:ring-emerald-500 cursor-pointer"
+              />
+              <div className="flex-1 text-[12.5px]">
+                <div className="flex items-center justify-between">
+                  <span className={`font-semibold ${checklist.step4 ? "line-through text-slate-500" : "text-slate-900"}`}>
+                    4. Deploy Read-Only IAM Role
+                  </span>
+                  <Link
+                    to="/settings"
+                    onClick={(e) => e.stopPropagation()}
+                    className="text-[11.5px] text-sky-600 hover:text-sky-800 font-semibold"
+                  >
+                    IAM Setup →
+                  </Link>
+                </div>
+                <p className="text-[11.5px] text-slate-500 mt-0.5">
+                  Launch 1-click CloudFormation template with scoped STS AssumeRole & unique ExternalID.
+                </p>
+              </div>
+            </div>
+
+            {/* Step 5 */}
+            <div
+              onClick={() => toggleChecklistItem("step5")}
+              className={`p-3.5 rounded-xl border transition-all cursor-pointer flex items-start gap-3 md:col-span-2 ${
+                checklist.step5 ? "bg-emerald-50/40 border-emerald-200" : "bg-slate-50/50 border-slate-200 hover:bg-slate-50"
+              }`}
+            >
+              <input
+                type="checkbox"
+                checked={checklist.step5}
+                onChange={() => {}}
+                className="mt-0.5 rounded text-emerald-600 focus:ring-emerald-500 cursor-pointer"
+              />
+              <div className="flex-1 text-[12.5px]">
+                <div className="flex items-center justify-between">
+                  <span className={`font-semibold ${checklist.step5 ? "line-through text-slate-500" : "text-slate-900"}`}>
+                    5. Confirm SRE Guardrails & Slack Alert Webhook
+                  </span>
+                  <Link
+                    to="/settings"
+                    onClick={(e) => e.stopPropagation()}
+                    className="text-[11.5px] text-sky-600 hover:text-sky-800 font-semibold"
+                  >
+                    Guardrail Settings →
+                  </Link>
+                </div>
+                <p className="text-[11.5px] text-slate-500 mt-0.5">
+                  Enforce passive Shadow Mode, hard Min/Max instance bounds, and test SRE webhook payload delivery.
+                </p>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
 
       {/* 4 KPI Cards */}

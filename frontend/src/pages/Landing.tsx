@@ -490,10 +490,27 @@ export default function Landing() {
       </section>
 
       {/* Footer */}
-      <footer className="border-t border-slate-200 py-8 text-center text-slate-500 text-[12.5px]">
-        <div className="max-w-[1180px] mx-auto px-8 flex justify-between items-center">
-          <CloudFlipLogo size={22} textSize="text-[15px]" />
-          <div>Demo build · Simulated data unless AWS account connected</div>
+      <footer className="border-t border-slate-200 py-10 bg-slate-50/60 text-slate-500 text-[13px]">
+        <div className="max-w-[1180px] mx-auto px-4 sm:px-8 space-y-6">
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+            <CloudFlipLogo size={24} />
+            <div className="flex flex-wrap items-center gap-x-6 gap-y-2 text-[13px] font-medium text-slate-600">
+              <Link to="/simulator" className="hover:text-slate-900 transition-colors">Surge Simulator</Link>
+              <Link to="/backtest" className="hover:text-slate-900 transition-colors">Trace Backtest</Link>
+              <Link to="/compare" className="hover:text-slate-900 transition-colors">Compare vs AWS/Datadog</Link>
+              <Link to="/security" className="hover:text-slate-900 transition-colors">Security Whitepaper</Link>
+              <Link to="/pricing" className="hover:text-slate-900 transition-colors">Pricing</Link>
+              <Link to="/terms" className="hover:text-slate-900 transition-colors">Terms</Link>
+              <Link to="/privacy" className="hover:text-slate-900 transition-colors">Privacy</Link>
+            </div>
+          </div>
+          <div className="flex flex-col sm:flex-row justify-between items-center text-[12px] text-slate-400 pt-4 border-t border-slate-200/60 gap-2">
+            <div>© 2026 CloudFlip · Built for zero-downtime predictive infrastructure engineering.</div>
+            <div className="flex items-center gap-2">
+              <span className="w-2 h-2 rounded-full bg-emerald-500" />
+              <span>Fail-Open Architecture Guaranteed</span>
+            </div>
+          </div>
         </div>
       </footer>
     </div>
