@@ -91,6 +91,9 @@ export default function App() {
         <Route path="/pricing" element={<Pricing />} />
         <Route path="/simulator" element={<Navigate to="/app/simulator" replace />} />
         <Route path="/demo" element={<Navigate to="/app/simulator" replace />} />
+        <Route path="/predictions" element={<Navigate to="/app/predictions" replace />} />
+        <Route path="/backtest" element={<Navigate to="/app/predictions" replace />} />
+        <Route path="/replay" element={<Navigate to="/app/predictions" replace />} />
         <Route path="/login" element={<AuthForm mode="login" />} />
         <Route path="/signup" element={<AuthForm mode="signup" />} />
         <Route path="/app/*" element={<AppShell />} />

@@ -14,7 +14,7 @@ const groups: { label: string; links: { to: string; label: string; icon?: string
     label: "Intelligence",
     links: [
       { to: "/app/metrics", label: "Live metrics", icon: "📈" },
-      { to: "/app/predictions", label: "Predictions", icon: "🔮" },
+      { to: "/app/predictions", label: "Trace Backtest", icon: "🔮" },
       { to: "/app/anomalies", label: "Anomalies", icon: "⚠️" },
       { to: "/app/bottlenecks", label: "Bottlenecks", icon: "📍" },
     ],

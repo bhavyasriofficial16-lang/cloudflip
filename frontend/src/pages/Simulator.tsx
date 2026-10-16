@@ -256,6 +256,12 @@ export default function Simulator() {
           </div>
 
           <div className="flex items-center gap-2 shrink-0">
+            <Link
+              to="/app/predictions"
+              className="text-[12.5px] font-semibold text-slate-700 hover:text-slate-900 border border-slate-300 rounded-lg px-3 py-1.5 hover:bg-slate-50 transition-colors flex items-center gap-1.5"
+            >
+              <span>📊</span> Public Trace Backtest
+            </Link>
             <button
               onClick={() => setShowAssumptions(!showAssumptions)}
               className="text-[12.5px] font-semibold text-slate-600 hover:text-slate-900 border border-slate-300 rounded-lg px-3 py-1.5 hover:bg-slate-50 transition-colors"
