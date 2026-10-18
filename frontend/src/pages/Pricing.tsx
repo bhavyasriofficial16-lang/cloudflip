@@ -245,7 +245,7 @@ export default function Pricing() {
                 region === "GLOBAL" ? "bg-white text-slate-900 shadow-xs font-semibold" : "text-slate-600 hover:text-slate-900"
               }`}
             >
-              <span>🌎</span> International (Stripe - USD $)
+              <span>🌎</span> International (Skydo - USD $)
             </button>
           </div>
         </div>
@@ -369,7 +369,7 @@ export default function Pricing() {
         <p className="text-[12.5px] text-slate-500 mt-8">
           {region === "IN"
             ? "Indian payments are processed securely via Razorpay supporting UPI, Cards, Netbanking, and Wallets in INR ₹."
-            : "International payments are processed via Stripe subscription & metered billing supporting Cards, Apple Pay, and Google Pay in USD $."}
+            : "International payments are processed securely via Skydo supporting Global Credit/Debit Cards, US ACH Transfers, and Wire in USD $."}
         </p>
       </section>
     </div>
