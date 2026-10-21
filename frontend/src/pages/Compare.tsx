@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import CloudFlipLogo from "../components/CloudFlipLogo";
+import { openCookiePreferences } from "../components/CookieConsent";
 
 export default function Compare() {
   return (
@@ -193,6 +194,21 @@ export default function Compare() {
           </div>
         </div>
       </main>
+
+      <footer className="border-t border-slate-200 py-8 bg-slate-50/70 text-slate-500 text-[12px] mt-12">
+        <div className="max-w-[1180px] mx-auto px-4 sm:px-8 flex flex-col sm:flex-row items-center justify-between gap-4">
+          <div>© 2026 CloudFlip Platform · Fail-Open Predictive Cloud Architecture.</div>
+          <div className="flex items-center gap-4">
+            <Link to="/terms" className="hover:text-slate-800">Terms of Service</Link>
+            <Link to="/privacy" className="hover:text-slate-800">Privacy Policy</Link>
+            <Link to="/cookies" className="hover:text-slate-800">Cookie Policy</Link>
+            <button type="button" onClick={openCookiePreferences} className="hover:text-slate-800 underline">
+              Cookie Preferences
+            </button>
+            <Link to="/security" className="hover:text-slate-800">Security Architecture</Link>
+          </div>
+        </div>
+      </footer>
     </div>
   );
 }

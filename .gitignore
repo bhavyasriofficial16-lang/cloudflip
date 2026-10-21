@@ -25,4 +25,6 @@ transcript_temp.txt
 build_cv_pdf.py
 generate_cv*.py
 *.pdf
+Export_Invoice*
+*.tsbuildinfo
 

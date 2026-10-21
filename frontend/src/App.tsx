@@ -22,6 +22,9 @@ import Security from "./pages/Security";
 import Compare from "./pages/Compare";
 import Terms from "./pages/Terms";
 import Privacy from "./pages/Privacy";
+import CookiePolicy from "./pages/CookiePolicy";
+import CookieConsent from "./components/CookieConsent";
+import SecurityCheckpoint from "./components/SecurityCheckpoint";
 import { AuthProvider } from "./context/AuthContext";
 import { api } from "./api/client";
 
@@ -90,6 +93,7 @@ export default function App() {
 
   return (
     <AuthProvider>
+      <SecurityCheckpoint />
       <Routes>
         <Route path="/" element={<Landing />} />
         <Route path="/pricing" element={<Pricing />} />
@@ -97,6 +101,7 @@ export default function App() {
         <Route path="/compare" element={<Compare />} />
         <Route path="/terms" element={<Terms />} />
         <Route path="/privacy" element={<Privacy />} />
+        <Route path="/cookies" element={<CookiePolicy />} />
         <Route path="/simulator" element={<Navigate to="/app/simulator" replace />} />
         <Route path="/demo" element={<Navigate to="/app/simulator" replace />} />
         <Route path="/predictions" element={<Navigate to="/app/predictions" replace />} />
@@ -107,6 +112,7 @@ export default function App() {
         <Route path="/app/*" element={<AppShell />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
+      <CookieConsent />
     </AuthProvider>
   );
 }

@@ -1,5 +1,6 @@
 import { NavLink } from "react-router-dom";
 import CloudFlipLogo from "./CloudFlipLogo";
+import { openCookiePreferences } from "./CookieConsent";
 
 const groups: { label: string; links: { to: string; label: string; icon?: string }[] }[] = [
   { label: "Overview", links: [{ to: "/app", label: "Dashboard", icon: "📊" }] },
@@ -86,14 +87,24 @@ export default function Sidebar({
         </div>
       ))}
 
-      <div className="mt-auto pt-4 border-t border-slate-200">
+      <div className="mt-auto pt-3 border-t border-slate-200 space-y-1">
         <NavLink
           to="/"
           onClick={onClose}
-          className="flex items-center gap-2 px-3 py-2 rounded-lg text-[13.5px] font-medium text-slate-600 hover:bg-slate-100 hover:text-slate-900"
+          className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-[13px] font-medium text-slate-600 hover:bg-slate-100 hover:text-slate-900"
         >
           ← Back to site
         </NavLink>
+        <button
+          type="button"
+          onClick={() => {
+            onClose?.();
+            openCookiePreferences();
+          }}
+          className="w-full flex items-center gap-2 px-3 py-1.5 rounded-lg text-[12px] font-medium text-slate-400 hover:text-slate-700 hover:bg-slate-50 transition-colors text-left"
+        >
+          <span>🍪</span> Cookie Preferences
+        </button>
       </div>
     </div>
   );

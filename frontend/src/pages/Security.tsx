@@ -1,5 +1,7 @@
 import { Link } from "react-router-dom";
 import CloudFlipLogo from "../components/CloudFlipLogo";
+import HumanVerification from "../components/HumanVerification";
+import { openCookiePreferences } from "../components/CookieConsent";
 
 export default function Security() {
   return (
@@ -188,6 +190,30 @@ export default function Security() {
           </div>
         </section>
 
+        {/* 5. Automated Bot Defense & Human Verification */}
+        <section className="space-y-4">
+          <h2 className="font-display font-bold text-[22px] text-slate-900 border-b border-slate-200 pb-2">
+            5. Automated Bot Defense & Human Verification Challenge
+          </h2>
+          <p className="text-[14px] text-slate-600 leading-relaxed">
+            CloudFlip deploys multi-tiered edge bot defense to protect predictive telemetry pipelines against distributed brute-force attacks, scrapers, and credential stuffing.
+          </p>
+          <div className="bg-slate-50 border border-slate-200 rounded-xl p-5">
+            <h3 className="font-display font-bold text-[14.5px] text-slate-900 mb-1">
+              Live Interactive Verification Challenge Test
+            </h3>
+            <p className="text-[12.5px] text-slate-500 mb-3">
+              Test our client entropy challenge and Turnstile-compatible verification mechanism below:
+            </p>
+            <div className="max-w-[380px]">
+              <HumanVerification
+                onVerify={() => {}}
+                className="bg-white border-slate-300"
+              />
+            </div>
+          </div>
+        </section>
+
         {/* Contact Security Team */}
         <div className="border border-slate-200 rounded-xl p-6 bg-slate-50 flex flex-col sm:flex-row items-center justify-between gap-4">
           <div>
@@ -202,6 +228,20 @@ export default function Security() {
           </a>
         </div>
       </main>
+
+      <footer className="border-t border-slate-200 py-8 bg-slate-50/70 text-slate-500 text-[12px] mt-12">
+        <div className="max-w-[880px] mx-auto px-4 sm:px-8 flex flex-col sm:flex-row items-center justify-between gap-4">
+          <div>© 2026 CloudFlip Platform · Enterprise Security Architecture.</div>
+          <div className="flex items-center gap-4">
+            <Link to="/terms" className="hover:text-slate-800">Terms of Service</Link>
+            <Link to="/privacy" className="hover:text-slate-800">Privacy Policy</Link>
+            <Link to="/cookies" className="hover:text-slate-800">Cookie Policy</Link>
+            <button type="button" onClick={openCookiePreferences} className="hover:text-slate-800 underline">
+              Cookie Preferences
+            </button>
+          </div>
+        </div>
+      </footer>
     </div>
   );
 }

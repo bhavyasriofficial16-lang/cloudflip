@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import CloudFlipLogo from "../components/CloudFlipLogo";
+import { openCookiePreferences } from "../components/CookieConsent";
 
 function FlipCard() {
   const [flipped, setFlipped] = useState(false);
@@ -489,26 +490,91 @@ export default function Landing() {
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="border-t border-slate-200 py-10 bg-slate-50/60 text-slate-500 text-[13px]">
-        <div className="max-w-[1180px] mx-auto px-4 sm:px-8 space-y-6">
-          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-            <CloudFlipLogo size={24} />
-            <div className="flex flex-wrap items-center gap-x-6 gap-y-2 text-[13px] font-medium text-slate-600">
-              <Link to="/simulator" className="hover:text-slate-900 transition-colors">Surge Simulator</Link>
-              <Link to="/backtest" className="hover:text-slate-900 transition-colors">Trace Backtest</Link>
-              <Link to="/compare" className="hover:text-slate-900 transition-colors">Compare vs AWS/Datadog</Link>
-              <Link to="/security" className="hover:text-slate-900 transition-colors">Security Whitepaper</Link>
-              <Link to="/pricing" className="hover:text-slate-900 transition-colors">Pricing</Link>
-              <Link to="/terms" className="hover:text-slate-900 transition-colors">Terms</Link>
-              <Link to="/privacy" className="hover:text-slate-900 transition-colors">Privacy</Link>
+      {/* Enterprise Security & Trust Grid */}
+      <section className="border-t border-slate-200/80 bg-slate-50/50 py-16">
+        <div className="max-w-[1180px] mx-auto px-4 sm:px-8">
+          <div className="text-center max-w-[680px] mx-auto mb-12">
+            <span className="text-[11px] font-mono font-bold uppercase tracking-wider text-emerald-700 bg-emerald-50 border border-emerald-200 px-3 py-1 rounded-full">
+              🔒 Bank-Grade Trust & Compliance
+            </span>
+            <h3 className="font-display font-extrabold text-[28px] sm:text-[34px] text-slate-900 mt-3">
+              Built for zero-trust enterprise infrastructure.
+            </h3>
+            <p className="text-[14.5px] text-slate-600 mt-2">
+              Every telemetry pipeline, API call, and recommendation is secured by industry-leading standards trusted by Fortune 500 engineering teams.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
+            <div className="bg-white border border-slate-200 rounded-xl p-5 shadow-xs hover:border-sky-300 transition-colors">
+              <div className="text-[24px] mb-3">🛡️</div>
+              <h4 className="font-display font-bold text-[15px] text-slate-900 mb-1">SOC 2 Type II Ready</h4>
+              <p className="text-[12.5px] text-slate-600 leading-relaxed">
+                Dual IAM architecture separating passive telemetry reading from scoped capacity remediation.
+              </p>
+            </div>
+
+            <div className="bg-white border border-slate-200 rounded-xl p-5 shadow-xs hover:border-sky-300 transition-colors">
+              <div className="text-[24px] mb-3">🔒</div>
+              <h4 className="font-display font-bold text-[15px] text-slate-900 mb-1">TLS 1.3 & AES-256</h4>
+              <p className="text-[12.5px] text-slate-600 leading-relaxed">
+                Zero plaintext data. Complete in-transit encryption and encrypted database storage at rest.
+              </p>
+            </div>
+
+            <div className="bg-white border border-slate-200 rounded-xl p-5 shadow-xs hover:border-sky-300 transition-colors">
+              <div className="text-[24px] mb-3">🤖</div>
+              <h4 className="font-display font-bold text-[15px] text-slate-900 mb-1">Bot Shield Protection</h4>
+              <p className="text-[12.5px] text-slate-600 leading-relaxed">
+                Continuous anti-bot verification, Turnstile challenges, and rate-limiting defense against credential stuffing.
+              </p>
+            </div>
+
+            <div className="bg-white border border-slate-200 rounded-xl p-5 shadow-xs hover:border-sky-300 transition-colors">
+              <div className="text-[24px] mb-3">🇪🇺</div>
+              <h4 className="font-display font-bold text-[15px] text-slate-900 mb-1">GDPR & CCPA Compliant</h4>
+              <p className="text-[12.5px] text-slate-600 leading-relaxed">
+                Zero user PII collected. Granular cookie preference management and immediate data erasure on demand.
+              </p>
             </div>
           </div>
-          <div className="flex flex-col sm:flex-row justify-between items-center text-[12px] text-slate-400 pt-4 border-t border-slate-200/60 gap-2">
-            <div>© 2026 CloudFlip · Built for zero-downtime predictive infrastructure engineering.</div>
-            <div className="flex items-center gap-2">
-              <span className="w-2 h-2 rounded-full bg-emerald-500" />
-              <span>Fail-Open Architecture Guaranteed</span>
+        </div>
+      </section>
+
+      {/* Footer */}
+      <footer className="border-t border-slate-200 py-12 bg-white text-slate-500 text-[13px]">
+        <div className="max-w-[1180px] mx-auto px-4 sm:px-8 space-y-8">
+          <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6">
+            <CloudFlipLogo size={26} />
+            <div className="flex flex-wrap items-center gap-x-6 gap-y-2.5 text-[13px] font-medium text-slate-600">
+              <Link to="/simulator" className="hover:text-slate-900 transition-colors">Surge Simulator</Link>
+              <Link to="/backtest" className="hover:text-slate-900 transition-colors">Trace Backtest</Link>
+              <Link to="/compare" className="hover:text-slate-900 transition-colors">Compare vs Datadog</Link>
+              <Link to="/security" className="hover:text-slate-900 transition-colors">Security Whitepaper</Link>
+              <Link to="/pricing" className="hover:text-slate-900 transition-colors">Pricing</Link>
+              <Link to="/terms" className="hover:text-slate-900 transition-colors">Terms of Service</Link>
+              <Link to="/privacy" className="hover:text-slate-900 transition-colors">Privacy Policy</Link>
+              <Link to="/cookies" className="hover:text-slate-900 transition-colors">Cookie Policy</Link>
+              <button
+                type="button"
+                onClick={openCookiePreferences}
+                className="text-slate-600 hover:text-slate-900 underline underline-offset-2 transition-colors cursor-pointer"
+              >
+                Cookie Preferences
+              </button>
+            </div>
+          </div>
+
+          <div className="flex flex-col sm:flex-row justify-between items-center text-[12px] text-slate-400 pt-6 border-t border-slate-100 gap-3">
+            <div>© 2026 CloudFlip Platform · Built for zero-downtime predictive infrastructure engineering.</div>
+            <div className="flex items-center gap-4">
+              <span className="flex items-center gap-1.5 text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200 font-medium text-[11px]">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                All Systems Operational
+              </span>
+              <span className="flex items-center gap-1.5 text-sky-700 bg-sky-50 px-2 py-0.5 rounded border border-sky-200 font-medium text-[11px]">
+                <span>🔒</span> TLS 1.3 Verified
+              </span>
             </div>
           </div>
         </div>

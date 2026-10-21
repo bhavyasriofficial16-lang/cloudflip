@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { api } from "../api/client";
 import { useAuth } from "../context/AuthContext";
 import CloudFlipLogo from "../components/CloudFlipLogo";
+import { openCookiePreferences } from "../components/CookieConsent";
 
 declare global {
   interface Window {
@@ -372,6 +373,26 @@ export default function Pricing() {
             : "International payments are processed securely via Skydo supporting Global Credit/Debit Cards, US ACH Transfers, and Wire in USD $."}
         </p>
       </section>
+
+      {/* Pricing Footer */}
+      <footer className="border-t border-slate-200 py-10 bg-slate-50/70 text-slate-500 text-[12.5px]">
+        <div className="max-w-[1180px] mx-auto px-4 sm:px-8 flex flex-col sm:flex-row items-center justify-between gap-4">
+          <div>© 2026 CloudFlip Platform · All subscriptions are secured by 256-bit TLS encryption.</div>
+          <div className="flex flex-wrap items-center gap-x-5 gap-y-2">
+            <Link to="/terms" className="hover:text-slate-800">Terms of Service</Link>
+            <Link to="/privacy" className="hover:text-slate-800">Privacy Policy</Link>
+            <Link to="/cookies" className="hover:text-slate-800">Cookie Policy</Link>
+            <button
+              type="button"
+              onClick={openCookiePreferences}
+              className="hover:text-slate-800 underline underline-offset-2"
+            >
+              Cookie Preferences
+            </button>
+            <Link to="/security" className="hover:text-slate-800">Security Architecture</Link>
+          </div>
+        </div>
+      </footer>
     </div>
   );
 }
