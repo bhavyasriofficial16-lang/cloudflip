@@ -144,8 +144,8 @@ export default function Landing() {
             <Link to="/signup" className="text-[14px] font-medium text-slate-700 hover:text-slate-900 px-3 py-1.5">
               Log in
             </Link>
-            <Link to="/app" className="bg-[#4FD1E8] text-[#04141A] font-semibold text-[14px] rounded-md px-4 py-2 hover:bg-[#3ec4db] transition-colors shadow-sm">
-              Get started
+            <Link to="/signup" className="bg-[#4FD1E8] text-[#04141A] font-semibold text-[13.5px] rounded-lg px-4 py-2 hover:bg-[#3ec4db] transition-colors shadow-xs">
+              Start Free Pilot →
             </Link>
           </div>
 
@@ -211,19 +211,31 @@ export default function Landing() {
       {/* Hero Section */}
       <section className="max-w-[1180px] mx-auto px-8 pt-16 pb-16 grid grid-cols-1 lg:grid-cols-[1.05fr_.95fr] gap-14 items-center">
         <div>
-          <h1 className="font-display font-bold text-[48px] lg:text-[54px] text-slate-900 leading-[1.05] tracking-tight max-w-[560px]">
+          <div className="inline-flex items-center gap-2 text-[12px] font-semibold text-emerald-800 bg-emerald-50 border border-emerald-200 px-3.5 py-1 rounded-full mb-4">
+            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+            14-Day Free Pilot · No Credit Card Required
+          </div>
+          <h1 className="font-display font-bold text-[46px] lg:text-[52px] text-slate-900 leading-[1.08] tracking-tight max-w-[560px]">
             Flip from reactive to predictive.
           </h1>
-          <p className="text-[17px] text-slate-600 mt-4.5 max-w-[460px] leading-relaxed">
-            CloudFlip understands your cloud infrastructure, predicts what's coming next, and helps you act before small problems become major incidents.
+          <p className="text-[16.5px] text-slate-600 mt-4 max-w-[480px] leading-relaxed">
+            Test CloudFlip free on your cloud infrastructure for two weeks. Predict capacity limits before traffic spikes, eliminate AWS waste, and verify zero-downtime scaling with zero risk.
           </p>
-          <div className="flex gap-3 mt-8">
-            <Link to="/app" className="bg-[#4FD1E8] text-[#04141A] font-semibold text-[14.5px] rounded-md px-6 py-3 hover:bg-[#3ec4db] transition-colors shadow-sm">
-              Get started
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 mt-7">
+            <Link to="/signup" className="bg-[#4FD1E8] text-[#04141A] font-semibold text-[14.5px] rounded-lg px-6 py-3.5 hover:bg-[#3ec4db] transition-colors shadow-xs text-center flex items-center justify-center gap-2">
+              <span>Start 2-Week Free Pilot</span>
+              <span>→</span>
             </Link>
-            <Link to="/pricing" className="border border-slate-300 text-slate-800 font-semibold text-[14.5px] rounded-md px-6 py-3 hover:bg-slate-50 transition-colors">
-              View packages
+            <Link to="/simulator" className="border border-slate-300 hover:border-slate-400 text-slate-800 font-semibold text-[14.5px] rounded-lg px-5 py-3.5 hover:bg-slate-50 transition-colors text-center">
+              ⚡ Try Simulator Demo
             </Link>
+          </div>
+          <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-[12px] text-slate-500 mt-3.5">
+            <span className="flex items-center gap-1 text-slate-600">✓ 14 days full access</span>
+            <span>•</span>
+            <span className="flex items-center gap-1 text-slate-600">✓ Zero credit card needed</span>
+            <span>•</span>
+            <span className="flex items-center gap-1 text-slate-600">✓ Read-only IAM safe</span>
           </div>
         </div>
 
@@ -464,27 +476,27 @@ export default function Landing() {
       <section className="max-w-[1180px] mx-auto px-8 py-16">
         <div className="rounded-2xl border border-sky-200 bg-sky-50/50 p-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-8">
           <div>
-            <div className="text-sky-600 text-[13px] font-semibold mb-2">1-Click AWS Onboarding Ready</div>
+            <div className="text-sky-600 text-[13px] font-semibold mb-2">14-Day Zero-Risk Production Pilot</div>
             <h3 className="font-display font-bold text-[30px] text-slate-900 mb-3">
-              Deploy CloudFlip in 60 seconds.
+              Deploy CloudFlip free for two weeks.
             </h3>
             <p className="text-slate-600 text-[15px] max-w-[540px] leading-relaxed">
-              Launch our official AWS CloudFormation Stack with a single click. Zero credentials shared, least-privilege IAM execution, and instant telemetry discovery.
+              Connect read-only AWS telemetry in 60 seconds with least-privilege IAM roles. If CloudFlip doesn't uncover bottlenecks, eliminate overprovisioning waste, and safeguard your latency, you pay nothing.
             </p>
           </div>
 
           <div className="flex flex-col sm:flex-row gap-3">
             <Link
+              to="/signup"
+              className="bg-[#4FD1E8] text-[#04141A] font-semibold text-[14.5px] rounded-lg px-6 py-3 hover:bg-[#3ec4db] transition-colors whitespace-nowrap shadow-xs text-center"
+            >
+              Start 14-Day Free Pilot →
+            </Link>
+            <Link
               to="/app/settings"
               className="bg-sky-600 hover:bg-sky-700 text-white font-semibold text-[14.5px] rounded-lg px-6 py-3 transition-colors whitespace-nowrap shadow-xs text-center"
             >
               ⚡ 1-Click AWS Connect
-            </Link>
-            <Link
-              to="/app"
-              className="bg-[#4FD1E8] text-[#04141A] font-semibold text-[14.5px] rounded-lg px-6 py-3 hover:bg-[#3ec4db] transition-colors whitespace-nowrap shadow-xs text-center"
-            >
-              Explore Demo →
             </Link>
           </div>
         </div>

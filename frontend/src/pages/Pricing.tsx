@@ -20,78 +20,92 @@ const SKYDO_LINKS: Record<string, string> = {
 const DEFAULT_PLANS = [
   {
     id: "free",
-    name: "Free / Starter",
-    target_customer: "Developers & Testers",
+    name: "Free",
+    tagline: "See it work before you connect anything",
     price_inr: "₹0",
     price_usd: "$0",
     price_display: "$0",
     features: [
-      "Simulator only (up to 3 resources)",
-      "Gets users hooked on the product",
-      "No real AWS connection required",
-      "Basic metrics & dashboard",
+      "Simulator with up to 3 resources",
+      "Basic dashboard",
+      "No AWS access needed",
     ],
     cta: "Start free",
   },
   {
     id: "pay_as_you_go",
     name: "Pay-As-You-Go",
-    target_customer: "Small Teams & Variable Workloads",
+    tagline: "Pay only for what you protect",
     price_inr: "₹25 / resource-hr",
     price_usd: "$0.30 / resource-hr",
-    price_display: "$0.30 / resource-hr (₹25/hr)",
+    price_display: "$0.30 / resource-hr",
     features: [
-      "Zero friction to start",
-      "Scales automatically with client growth",
-      "No monthly commitment",
-      "Full Pro features & metrics",
+      "No commitment",
+      "Full Pro features",
+      "Best for seasonal or variable workloads",
     ],
     cta: "Start Pay-As-You-Go",
   },
   {
     id: "pro_monthly",
     name: "Pro Monthly",
-    target_customer: "Growing Companies",
+    tagline: "Predict and fix before users notice",
     price_inr: "₹7,999 / mo",
-    price_usd: "$99 / mo",
-    price_display: "$99 / mo (₹7,999/mo)",
+    price_usd: "$99/mo",
+    price_display: "$99/mo",
     features: [
-      "Predictable MRR (Monthly Recurring Revenue)",
-      "Real AWS & Multi-Cloud connection",
-      "Predictions, anomalies & simulator",
-      "Manual & autonomous AI remediation",
+      "Real AWS connection",
+      "Predictions and anomaly alerts",
+      "Manual and autonomous remediation",
+      "Up to 25 resources",
     ],
     cta: "Start Pro Monthly",
   },
   {
     id: "pro_annual",
     name: "Pro Annual",
-    target_customer: "Established Businesses",
+    tagline: "Cover every peak season",
     price_inr: "₹79,990 / yr",
-    price_usd: "$990 / yr",
-    price_display: "$990 / yr (2 months free)",
+    price_usd: "$990/yr",
+    price_display: "$990/yr",
     badge: "2 months free",
     features: [
-      "Upfront annual cash flow & lower churn",
-      "Everything in Pro Monthly",
-      "2 months free included",
-      "Priority SRE support & SLA",
+      "Everything in Pro",
+      "2 months free",
+      "Price locked for 12 months",
+      "Priority support",
     ],
     cta: "Start Pro Annual",
   },
   {
+    id: "team",
+    name: "Team (new)",
+    tagline: "Built for SRE and platform teams",
+    price_inr: "from ₹39,990 / mo",
+    price_usd: "from $499/mo",
+    price_display: "from $499/mo",
+    badge: "New",
+    features: [
+      "Up to 100 resources",
+      "Custom guardrails",
+      "Audit log",
+      "Priority support",
+    ],
+    cta: "Start Team Plan",
+  },
+  {
     id: "enterprise",
     name: "Enterprise",
-    target_customer: "Large Scale Infrastructure",
-    price_inr: "Custom Quote",
-    price_usd: "Custom / Quote",
-    price_display: "Custom / Quote",
+    tagline: "For large and multi-account infrastructure",
+    price_inr: "Custom",
+    price_usd: "Custom",
+    price_display: "Custom",
     badge: "Custom SLA",
     features: [
-      "SLA guarantee",
-      "Custom guardrails & policy engine",
-      "Dedicated solution architect",
-      "Unlimited AWS & Azure accounts",
+      "SLA",
+      "Custom policy engine",
+      "Dedicated solutions architect",
+      "Unlimited AWS and multi-cloud accounts",
     ],
     cta: "Contact Sales",
   },
@@ -121,8 +135,8 @@ export default function Pricing() {
   }, []);
 
   const choose = async (planId: string) => {
-    if (planId === "enterprise") {
-      window.location.href = "mailto:bhavyasriofficial16@gmail.com?subject=CloudFlip%20Enterprise%20Inquiry";
+    if (planId === "enterprise" || planId === "team") {
+      window.location.href = `mailto:bhavyasriofficial16@gmail.com?subject=CloudFlip%20${planId === "team" ? "Team" : "Enterprise"}%20Plan%20Inquiry`;
       return;
     }
     if (planId === "free") {
@@ -257,11 +271,11 @@ export default function Pricing() {
         </p>
 
         {/* Pricing Cards Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4">
           {plans.map((p) => (
             <div
               key={p.id}
-              className={`relative rounded-xl border p-5 flex flex-col justify-between transition-all ${
+              className={`relative rounded-xl border p-4 sm:p-5 flex flex-col justify-between transition-all ${
                 p.badge
                   ? "border-sky-300 bg-gradient-to-b from-sky-50/70 to-white shadow-sm"
                   : "border-slate-200 bg-white shadow-xs"
@@ -274,10 +288,10 @@ export default function Pricing() {
               )}
               <div>
                 <h3 className="font-display font-bold text-[16px] text-slate-900 mb-1">{p.name}</h3>
-                {p.target_customer && (
-                  <div className="text-[11.5px] font-medium text-sky-600 mb-3 bg-sky-50 inline-block px-2 py-0.5 rounded-md border border-sky-100">
-                    {p.target_customer}
-                  </div>
+                {p.tagline && (
+                  <p className="text-[12px] text-slate-500 mb-3 min-h-[34px] leading-snug">
+                    {p.tagline}
+                  </p>
                 )}
                 <div className="font-mono text-[18px] font-bold text-slate-900 mb-5">
                   {region === "IN" ? p.price_inr || p.price_display : p.price_usd || p.price_display}
@@ -318,49 +332,55 @@ export default function Pricing() {
           ))}
         </div>
 
-        {/* Feature Gating & Strategic Matrix Comparison Table */}
+        {/* Shared Plan Cards Comparison Table */}
         <div className="mt-16 pt-12 border-t border-slate-200">
-          <h3 className="font-display font-bold text-[22px] text-slate-900 mb-6">Pricing Matrix & Business Value</h3>
+          <h3 className="font-display font-bold text-[22px] text-slate-900 mb-6">Shared Plan Cards</h3>
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse border border-slate-200 rounded-lg overflow-hidden text-[13.5px]">
               <thead>
                 <tr className="bg-slate-50 border-b border-slate-200 font-display font-semibold text-slate-900">
-                  <th className="p-3.5">Model</th>
-                  <th className="p-3.5">Target Customer</th>
+                  <th className="p-3.5">Plan</th>
                   <th className="p-3.5">Price</th>
-                  <th className="p-3.5">Why It Works</th>
+                  <th className="p-3.5">Tagline</th>
+                  <th className="p-3.5">Key points</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-200 text-slate-700">
                 <tr className="hover:bg-slate-50/50">
-                  <td className="p-3.5 font-semibold text-slate-900">Free / Starter</td>
-                  <td className="p-3.5 text-slate-600">Developers & Testers</td>
-                  <td className="p-3.5 font-mono">$0 (up to 3 resources, simulator only)</td>
-                  <td className="p-3.5 font-medium text-emerald-700 bg-emerald-50/50">Gets users hooked on the product.</td>
+                  <td className="p-3.5 font-semibold text-slate-900">Free</td>
+                  <td className="p-3.5 font-mono text-slate-900 font-medium">$0</td>
+                  <td className="p-3.5 text-slate-600">See it work before you connect anything</td>
+                  <td className="p-3.5 text-slate-700">Simulator with up to 3 resources, basic dashboard, no AWS access needed</td>
                 </tr>
                 <tr className="hover:bg-slate-50/50">
                   <td className="p-3.5 font-semibold text-slate-900">Pay-As-You-Go</td>
-                  <td className="p-3.5 text-slate-600">Small Teams & Variable Workloads</td>
-                  <td className="p-3.5 font-mono">$0.30 / resource-hour (₹25/hr)</td>
-                  <td className="p-3.5 font-medium text-sky-700 bg-sky-50/50">Zero friction to start, scales with client growth.</td>
+                  <td className="p-3.5 font-mono text-slate-900 font-medium">$0.30 / resource-hr</td>
+                  <td className="p-3.5 text-slate-600">Pay only for what you protect</td>
+                  <td className="p-3.5 text-slate-700">No commitment, full Pro features, best for seasonal or variable workloads</td>
                 </tr>
                 <tr className="hover:bg-slate-50/50">
                   <td className="p-3.5 font-semibold text-slate-900">Pro Monthly</td>
-                  <td className="p-3.5 text-slate-600">Growing Companies</td>
-                  <td className="p-3.5 font-mono">$99 / mo (₹7,999/mo)</td>
-                  <td className="p-3.5 font-medium text-purple-700 bg-purple-50/50">Predictable MRR (Monthly Recurring Revenue).</td>
+                  <td className="p-3.5 font-mono text-slate-900 font-medium">$99/mo</td>
+                  <td className="p-3.5 text-slate-600">Predict and fix before users notice</td>
+                  <td className="p-3.5 text-slate-700">Real AWS connection, predictions and anomaly alerts, manual and autonomous remediation, up to 25 resources</td>
                 </tr>
                 <tr className="hover:bg-slate-50/50">
                   <td className="p-3.5 font-semibold text-slate-900">Pro Annual</td>
-                  <td className="p-3.5 text-slate-600">Established Businesses</td>
-                  <td className="p-3.5 font-mono">$990 / yr (2 months free)</td>
-                  <td className="p-3.5 font-medium text-amber-700 bg-amber-50/50">Upfront annual cash flow & lower churn.</td>
+                  <td className="p-3.5 font-mono text-slate-900 font-medium">$990/yr</td>
+                  <td className="p-3.5 text-slate-600">Cover every peak season</td>
+                  <td className="p-3.5 text-slate-700">Everything in Pro, 2 months free, price locked for 12 months, priority support</td>
+                </tr>
+                <tr className="hover:bg-slate-50/50">
+                  <td className="p-3.5 font-semibold text-slate-900">Team (new)</td>
+                  <td className="p-3.5 font-mono text-slate-900 font-medium">from $499/mo</td>
+                  <td className="p-3.5 text-slate-600">Built for SRE and platform teams</td>
+                  <td className="p-3.5 text-slate-700">Up to 100 resources, custom guardrails, audit log, priority support</td>
                 </tr>
                 <tr className="hover:bg-slate-50/50">
                   <td className="p-3.5 font-semibold text-slate-900">Enterprise</td>
-                  <td className="p-3.5 text-slate-600">Large Scale Infrastructure</td>
-                  <td className="p-3.5 font-mono">Custom / Quote</td>
-                  <td className="p-3.5 font-medium text-indigo-700 bg-indigo-50/50">SLA guarantee, custom guardrails & dedicated support.</td>
+                  <td className="p-3.5 font-mono text-slate-900 font-medium">Custom</td>
+                  <td className="p-3.5 text-slate-600">For large and multi-account infrastructure</td>
+                  <td className="p-3.5 text-slate-700">SLA, custom policy engine, dedicated solutions architect, unlimited AWS and multi-cloud accounts</td>
                 </tr>
               </tbody>
             </table>

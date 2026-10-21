@@ -26,13 +26,20 @@ export default function Topbar({
           </button>
         )}
         <span className="font-display font-bold text-[17px] sm:text-[18px] text-slate-900 truncate">{title}</span>
-        <span className="hidden sm:flex items-center gap-1.5 text-[11px] font-semibold px-2.5 py-0.5 rounded-full bg-sky-50 text-sky-700 border border-sky-200">
-          <span className="w-1.5 h-1.5 rounded-full bg-sky-500" />
-          {user ? mode.toUpperCase() : "INTERACTIVE DEMO"}
+        <span className="hidden sm:flex items-center gap-1.5 text-[11px] font-semibold px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200">
+          <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+          14-DAY ALL-ACCESS PILOT
         </span>
       </div>
 
       <div className="flex items-center gap-2 sm:gap-3">
+        <Link
+          to="/pricing"
+          className="hidden md:inline-flex items-center gap-1 text-[11.5px] font-semibold text-slate-700 hover:text-slate-900 bg-slate-100 hover:bg-slate-200 px-2.5 py-1.5 rounded-lg transition-colors border border-slate-200"
+        >
+          <span>⭐</span> Review Plans & Offers
+        </Link>
+
         <select 
           defaultValue="us-east-1"
           className="text-[12px] sm:text-[13px] font-medium text-slate-600 bg-slate-50 border border-slate-200 rounded-lg px-2 sm:px-3 py-1.5 outline-none focus:border-sky-400"
