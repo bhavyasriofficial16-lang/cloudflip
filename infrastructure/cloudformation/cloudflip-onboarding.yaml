@@ -22,13 +22,15 @@ Parameters:
 
   EnableAutonomousRemediation:
     Type: String
-    Default: 'true'
+    Default: 'false'
     AllowedValues:
       - 'true'
       - 'false'
     Description: >
       Allow CloudFlip to execute verified Auto Scaling adjustments when capacity
-      bottlenecks or traffic surges are predicted.
+      bottlenecks or traffic surges are predicted. Leave 'false' for 100% read-only
+      Shadow Mode (recommended for initial onboarding). Set to 'true' only to enable
+      automated capacity remediation.
 
 Conditions:
   CanRemediate: !Equals [!Ref EnableAutonomousRemediation, 'true']

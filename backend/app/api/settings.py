@@ -144,14 +144,16 @@ def get_cloudformation_template():
 
 
 @router.get("/cloudformation/quick-launch")
-def get_quick_launch_url(region: str = "ap-south-1", external_id: Optional[str] = None):
+def get_quick_launch_url(region: str = "ap-south-1", external_id: Optional[str] = None, enable_remediation: bool = False):
     ext_id = external_id or "cloudflip-tenant-883921"
+    remediation_flag = "true" if enable_remediation else "false"
     # AWS CloudFormation Quick Create Console deep-link format
     base_console_url = f"https://{region}.console.aws.amazon.com/cloudformation/home?region={region}#/stacks/create/review"
-    params = f"stackName=CloudFlipIntegration&param_ExternalId={ext_id}&param_EnableAutonomousRemediation=true"
+    params = f"stackName=CloudFlipIntegration&param_ExternalId={ext_id}&param_EnableAutonomousRemediation={remediation_flag}"
     return {
         "region": region,
         "external_id": ext_id,
+        "enable_remediation": enable_remediation,
         "quick_launch_url": f"{base_console_url}?{params}",
         "stack_name": "CloudFlipIntegration",
         "recommended_role_name": f"CloudFlipIntegrationRole-{region}"

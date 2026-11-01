@@ -36,7 +36,7 @@ export default function CookiePolicy() {
             Cookie & Tracking Technologies Policy
           </h1>
           <p className="text-[13px] text-slate-500 mt-2">
-            Last updated: October 21, 2026 · Complies with EU ePrivacy Directive, GDPR, and CCPA
+            Last updated: November 1, 2026 · Designed in alignment with EU ePrivacy Directive, GDPR, CCPA, and India DPDP Act 2023
           </p>
         </div>
 
@@ -129,7 +129,7 @@ export default function CookiePolicy() {
                   </td>
                   <td className="p-3.5">180 Days</td>
                   <td className="p-3.5">
-                    Remembers default AWS region selections (e.g. us-east-1) and navigation menu states across sessions.
+                    Remembers default AWS region selections (e.g. ap-south-1, us-east-1) and navigation menu states across sessions.
                   </td>
                 </tr>
               </tbody>
@@ -139,17 +139,17 @@ export default function CookiePolicy() {
 
         <section className="space-y-3">
           <h2 className="font-display font-bold text-[20px] text-slate-900">
-            3. Third-Party Integrations
+            3. Third-Party Integrations & Sub-Processors
           </h2>
           <p>
-            When utilizing optional enterprise integrations, third parties may deposit cookies:
+            When utilizing optional platform integrations, vetted third parties may deposit functional tokens:
           </p>
           <ul className="list-disc pl-5 space-y-1.5">
             <li>
-              <strong>Cloudflare:</strong> Cloudflare Turnstile bot management tokens deployed to prevent automated DDoS attacks.
+              <strong>Cloudflare:</strong> Turnstile bot management tokens deployed at the edge to prevent automated DDoS attacks and scraper abuse.
             </li>
             <li>
-              <strong>Razorpay & Stripe:</strong> Fraud detection and PCI-DSS compliant secure checkout tokens during subscription activation.
+              <strong>Skydo & Razorpay:</strong> Payment processing and PCI-DSS compliant secure checkout tokens (Razorpay for domestic INR card/UPI billing; Skydo for international USD wire/ACH transfers).
             </li>
             <li>
               <strong>AWS STS:</strong> Ephemeral token exchanges for customer-controlled IAM cross-account authentication.
@@ -177,13 +177,27 @@ export default function CookiePolicy() {
             5. Contact Our Privacy Officer
           </h2>
           <p>
-            If you have questions regarding our cookie practices, please contact our Data Governance & Security team at{" "}
-            <a href="mailto:bhavyasriofficial16@gmail.com" className="text-sky-600 underline">
-              bhavyasriofficial16@gmail.com
+            CloudFlip is founded and operated by Bhavya Sri Boddeti. If you have questions regarding our cookie practices or wish to submit a data request, please contact us directly at{" "}
+            <a href="mailto:privacy@cloudflip.me" className="text-sky-600 font-semibold underline">
+              privacy@cloudflip.me
             </a>.
           </p>
         </section>
       </main>
+
+      <footer className="border-t border-slate-200 py-8 bg-slate-50/70 text-slate-500 text-[12px] mt-12">
+        <div className="max-w-[840px] mx-auto px-4 sm:px-8 flex flex-col sm:flex-row items-center justify-between gap-4">
+          <div>© 2026 CloudFlip Platform. Operated by Bhavya Sri Boddeti. All rights reserved.</div>
+          <div className="flex items-center gap-4">
+            <Link to="/terms" className="hover:text-slate-800">Terms of Service</Link>
+            <Link to="/privacy" className="hover:text-slate-800">Privacy Policy</Link>
+            <button type="button" onClick={openCookiePreferences} className="hover:text-slate-800 underline">
+              Cookie Preferences
+            </button>
+            <Link to="/security" className="hover:text-slate-800">Security Architecture</Link>
+          </div>
+        </div>
+      </footer>
     </div>
   );
 }

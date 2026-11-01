@@ -1057,7 +1057,7 @@ export default function Predictions() {
             ⚡ Connect Read-Only AWS
           </Link>
           <a
-            href="mailto:bhavyasriofficial16@gmail.com?subject=CloudFlip%20Custom%20Telemetry%20Backtest%20Request"
+            href="mailto:contact@cloudflip.me?subject=CloudFlip%20Custom%20Telemetry%20Backtest%20Request"
             className="w-full sm:w-auto text-center border border-slate-700 hover:border-slate-500 text-slate-200 hover:text-white font-medium text-[13.5px] px-4 py-3 rounded-xl transition-colors"
           >
             📧 Request Custom Backtest

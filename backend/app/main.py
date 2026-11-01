@@ -2,7 +2,7 @@ import time
 from collections import defaultdict
 from fastapi import FastAPI, Request, Response
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import JSONResponse
+from fastapi.responses import JSONResponse, PlainTextResponse
 
 from app.config.settings import get_settings
 from app.database.session import Base, engine, SessionLocal
@@ -121,4 +121,19 @@ def health():
         "simulation_only_mode": settings.simulation_only_mode,
         "daemon": telemetry_daemon.get_status(),
     }
+
+
+@app.get("/.well-known/security.txt", response_class=PlainTextResponse)
+def security_txt():
+    return (
+        "# CloudFlip Coordinated Vulnerability Disclosure Policy\n"
+        "# Reference: RFC 9116\n\n"
+        "Contact: mailto:security@cloudflip.me\n"
+        "Expires: 2027-11-01T00:00:00.000Z\n"
+        "Preferred-Languages: en\n"
+        "Canonical: https://cloudflip.me/.well-known/security.txt\n"
+        "Policy: https://cloudflip.me/security\n"
+        "Acknowledgments: https://cloudflip.me/security\n"
+    )
+
 

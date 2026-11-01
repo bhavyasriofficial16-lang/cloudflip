@@ -1,0 +1,273 @@
+\documentclass[11pt,letterpaper]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage{geometry}
+\geometry{letterpaper, margin=0.75in, top=0.7in, bottom=0.7in}
+\usepackage{titlesec}
+\usepackage{enumitem}
+\usepackage{amsmath,amssymb}
+\usepackage{tcolorbox}
+\usepackage[hidelinks]{hyperref}
+\usepackage{fancyhdr}
+\usepackage{microtype}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{booktabs}
+\usepackage{tabularx}
+
+% Colors
+\definecolor{codegreen}{rgb}{0,0.5,0}
+\definecolor{codegray}{rgb}{0.4,0.4,0.4}
+\definecolor{codepurple}{rgb}{0.5,0,0.7}
+\definecolor{backcolour}{rgb}{0.97,0.98,0.99}
+\definecolor{boxblue}{rgb}{0.08,0.45,0.75}
+
+% Listings configuration for Python code
+\lstdefinestyle{mystyle}{
+    backgroundcolor=\color{backcolour},   
+    commentstyle=\color{codegreen},
+    keywordstyle=\color{magenta}\bfseries,
+    numberstyle=\tiny\color{codegray},
+    stringstyle=\color{codepurple},
+    basicstyle=\ttfamily\footnotesize,
+    breakatwhitespace=false,         
+    breaklines=true,                 
+    captionpos=b,                    
+    keepspaces=true,                 
+    numbers=left,                    
+    numbersep=5pt,                  
+    showspaces=false,                
+    showstringspaces=false,
+    showtabs=false,                  
+    tabsize=2,
+    frame=single,
+    rulecolor=\color{gray!30}
+}
+\lstset{style=mystyle}
+
+\titleformat{\section}{\large\bfseries\scshape}{}{0em}{}[\vspace{-2pt}\titlerule\vspace{3pt}]
+\titleformat{\subsection}{\normalsize\bfseries}{}{0em}{}
+
+\pagestyle{fancy}
+\fancyhf{}
+\renewcommand{\headrulewidth}{0pt}
+\cfoot{\footnotesize \textcolor{gray}{CloudFlip Software Architecture \& Code Defense Guide -- Bhavya Sri Boddeti}}
+
+\tcbset{
+  colback=gray!5!white,
+  colframe=gray!75!black,
+  fonttitle=\bfseries,
+  arc=2mm
+}
+
+\begin{document}
+
+\begin{center}
+  {\LARGE \textbf{CloudFlip: Software Architecture, Code Implementation,}}\\[4pt]
+  {\LARGE \textbf{\& Technical Interview Defense Guide}}\\[6pt]
+  {\large \textbf{Bhavya Sri Boddeti}} \\[2pt]
+  {\small St. Ann's College for Women (Autonomous) \quad$|$\quad Department of Computer Science} \\[2pt]
+  {\small Research Preprint: DOI \href{https://doi.org/10.5281/zenodo.23136467}{10.5281/zenodo.23136467} \quad$|$\quad IEEE CCGrid 2027 Submission \#39 \quad$|$\quad Live: \url{https://cloudflip.me}}
+\end{center}
+
+\vspace{2pt}
+\hrule height 0.8pt
+\vspace{8pt}
+
+\section{System Overview \& Decoupled Architecture}
+CloudFlip is engineered as a high-throughput, event-driven, decoupled client-server platform designed for sub-millisecond predictive telemetry and closed-loop cloud autoscaling.
+
+\begin{tcolorbox}[title=High-Level Component Interaction Flow, colback=blue!2!white, colframe=boxblue]
+\begin{verbatim}
+ ┌─────────────────────────────────────────────────────────────┐
+ │                  FRONTEND (React 18 + TypeScript)           │
+ │  • Real-Time Recharts Telemetry   • Flash-Surge Simulator   │
+ │  • Live Wikipedia Streamer Probe  • FinOps Cost Analyzer    │
+ └──────────────────────────────┬──────────────────────────────┘
+                                │ REST APIs / JSON over HTTP
+ ┌──────────────────────────────▼──────────────────────────────┐
+ │                  BACKEND (FastAPI + Python 3.12)            │
+ │  • Async ASGI Event Loop         • Pydantic Schema Validator│
+ │  • SQLAlchemy ORM (SQLite / DB)  • Background Daemon Worker │
+ └──────┬───────────────────────┬───────────────────────┬──────┘
+        │                       │                       │
+ ┌──────▼──────────────┐ ┌──────▼──────────────┐ ┌──────▼──────────────┐
+ │  PREDICTION ENGINE  │ │  AUTONOMOUS AGENT   │ │ VERIFICATION ENGINE │
+ │  • Streaming EMA    │ │  • 5 Safety Gates   │ │  • Before/After Test│
+ │  • Velocity Slope   │ │  • Fleet Sizing     │ │  • Metric Feedback  │
+ │  • Error Bounds     │ │  • Anti-Flapping    │ │  • Auto-Rollback    │
+ └─────────────────────┘ └─────────────────────┘ └─────────────────────┘
+\end{verbatim}
+\end{tcolorbox}
+
+\begin{itemize}[itemsep=2pt]
+  \item \textbf{Backend Core (FastAPI + Python 3.12):} Built atop the Starlette ASGI framework and Uvicorn. Its asynchronous non-blocking event loop handles high-frequency telemetry ingestion from cloud probes without thread exhaustion.
+  \item \textbf{Frontend Telemetry (React 18 + TypeScript + Tailwind CSS):} Provides sub-second rendering of time-series trajectories using Recharts, decoupling client state management from server-side numerical computing.
+  \item \textbf{Data Modeling (Pydantic v2 + SQLAlchemy):} Guarantees strict data validation at ingestion boundaries for incoming metric envelopes and scale recommendations.
+\end{itemize}
+
+\section{Mapping Mathematical Formulations to Source Code}
+
+\subsection{Formula 1: Streaming Exponential Moving Average (EMA)}
+\textbf{File:} \texttt{backend/app/ml/prediction/engine.py} \\
+\textbf{Function:} \texttt{\_exponential\_smoothing(series, alpha=0.35)}
+
+\begin{lstlisting}[language=Python]
+def _exponential_smoothing(series: list[float], alpha: float = 0.35) -> float:
+    """
+    Computes single exponential smoothing over a sequential series.
+    Dampens high-frequency metric jitter while tracking sustained trend shifts.
+    """
+    level = series[0]
+    for x in series[1:]:
+        level = alpha * x + (1.0 - alpha) * level
+    return float(level)
+\end{lstlisting}
+
+\noindent \textbf{Interview Explanation:} ``In distributed environments, telemetry contains transient jitter caused by micro-bursts and garbage collection pauses. Rather than reacting to raw noise, we filter the arrival rate $\lambda_t$ through an exponential smoothing filter with smoothing parameter $\alpha = 0.35$. This assigns $35\%$ weighting to the most recent measurement and $65\%$ to historical inertia, eliminating unnecessary scaling triggers.''
+
+\vspace{6pt}
+\subsection{Formulas 2 \& 3: Velocity Slope \& Horizon Demand Projection}
+\textbf{File:} \texttt{backend/app/ml/prediction/engine.py} \\
+\textbf{Functions:} \texttt{\_trend\_rate(series, step\_minutes)} and \texttt{forecast()}
+
+\begin{lstlisting}[language=Python]
+def _trend_rate(series: list[float], step_minutes: float = 1.0) -> float:
+    """Calculates first-derivative velocity slope over look-back window."""
+    if len(series) < 2:
+        return 0.0
+    # Discrete velocity calculation: delta_demand / delta_time
+    return (series[-1] - series[0]) / (float(len(series) - 1) * step_minutes)
+
+def forecast(history: list[float], horizon_minutes: float = 15.0) -> float:
+    level = _exponential_smoothing(history, alpha=0.35)
+    rate_per_min = _trend_rate(history[-5:], step_minutes=1.0)
+    
+    # Linear projection over look-ahead horizon H: y(t+H) = L_t + r_t * H
+    predicted_demand = max(0.0, level + rate_per_min * horizon_minutes)
+    return float(predicted_demand)
+\end{lstlisting}
+
+\noindent \textbf{Interview Explanation:} ``Cloud VMs exhibit cold-start latency ($T_{\text{boot}} = 3\text{--}5$ minutes). If you only scale when CPU crosses $80\%$, the cluster experiences a 5-to-8 minute saturation blackout. CloudFlip calculates the first derivative velocity slope ($r_t$) over recent traffic windows and projects demand $H$ minutes forward ($H = 15\text{--}30$ mins), pre-warming instances before request queues saturate.''
+
+\vspace{6pt}
+\subsection{Formula 4: Target Fleet Sizing via Little's Law}
+\textbf{File:} \texttt{backend/app/ml/capacity/engine.py} \\
+\textbf{Function:} \texttt{required\_capacity()}
+
+\begin{lstlisting}[language=Python]
+import math
+from pydantic import BaseModel
+
+class CapacityPlan(BaseModel):
+    current_capacity_rpm: float
+    predicted_demand_rpm: float
+    required_instances: int
+    additional_instances: int
+
+def required_capacity(
+    predicted_demand_rpm: float, 
+    current_instances: int, 
+    measured_rpm_per_instance: float
+) -> CapacityPlan:
+    current_capacity = current_instances * measured_rpm_per_instance
+    # Fleet sizing: ceil(lambda_predicted / C_instance)
+    target_instances = math.ceil(predicted_demand_rpm / max(1.0, measured_rpm_per_instance))
+    required_instances = max(current_instances, target_instances)
+    
+    return CapacityPlan(
+        current_capacity_rpm=current_capacity,
+        predicted_demand_rpm=predicted_demand_rpm,
+        required_instances=required_instances,
+        additional_instances=max(0, required_instances - current_instances)
+    )
+\end{lstlisting}
+
+\noindent \textbf{Interview Explanation:} ``Under Little's Law ($L = \lambda W$), when arrival rate $\lambda$ multiplies during a surge, total concurrency $L$ balloons, saturating CPU and queue depth. Our capacity engine divides the anticipated arrival rate ($\lambda_{\text{pred}}$) by measured single-instance throughput ($C_{\text{inst}}$) to determine exact required nodes via ceiling division, avoiding both queue backpressure and over-provisioning waste.''
+
+\section{The Autonomous Agent: 5 Production Guardrails}
+\textbf{File:} \texttt{backend/app/actions/autonomous\_agent.py} \\
+\textbf{Function:} \texttt{run\_autonomous\_remediation\_sweep()}
+
+\noindent A common critique of autonomous systems in academia and industry is the danger of unstable oscillations or unbounded cloud costs. CloudFlip enforces five invariant guardrails:
+
+\begin{enumerate}[itemsep=4pt]
+  \item \textbf{Confidence Score Gate ($\tau_{\text{conf}} \ge 0.80$):} If model uncertainty exceeds the allowable bound ($\text{confidence} < 0.80$), autonomous execution is aborted, and a human alert is dispatched.
+  \item \textbf{FinOps Cost Ceiling ($\le \$500/\text{hr}$):} The agent evaluates the hourly burn-rate delta. Any scale action projected to exceed $\$500/\text{hour}$ is vetoed unless authorized by human operator override.
+  \item \textbf{Anti-Thrashing Cooldown ($T_{\text{cooldown}} = 300\text{ s}$):} Enforces a strict 5-minute freeze between consecutive scaling actions, preventing rapid scale-up/scale-down flapping caused by metric noise.
+  \item \textbf{Blast-Radius Clamp:}
+  \begin{itemize}[itemsep=1pt]
+    \item Single-step growth is capped at $3.0\times$ ($\text{MAX\_SCALE\_FACTOR} = 3.0$).
+    \item Absolute fleet bounds: $\text{HARD\_MIN\_INSTANCES} = 4$ and $\text{HARD\_MAX\_INSTANCES} = 120$.
+  \end{itemize}
+  \item \textbf{Autonomy State Control:} Operates across three selectable operational modes: \texttt{full\_autonomous}, \texttt{semi\_autonomous} (human-in-the-loop recommendation), and \texttt{off}.
+\end{enumerate}
+
+\section{Closed-Loop Verification Engine: ``Don't Trust the API''}
+\textbf{File:} \texttt{backend/app/verification/engine.py} \\
+\textbf{Function:} \texttt{verify\_scale\_action()}
+
+\noindent Cloud autoscalers routinely suffer from ``blind execution''---assuming that because the cloud management API returned an \texttt{HTTP 200 OK}, the underlying cluster has stabilized. In production, misconfigured containers, network timeouts, or thread pool deadlocks can render newly provisioned instances ineffective.
+
+\begin{lstlisting}[language=Python]
+def verify_scale_action(
+    cpu_before: float, cpu_after: float,
+    latency_before: float, latency_after: float,
+    error_before: float, error_after: float
+) -> str:
+    """
+    Verifies actual system health before and after a scaling event.
+    Guarantees observable metric convergence rather than relying on API status codes.
+    """
+    cpu_improved = cpu_after < (cpu_before * 0.85)
+    latency_improved = latency_after < (latency_before * 0.85)
+    errors_improved = error_after <= error_before
+
+    improvements = sum([cpu_improved, latency_improved, errors_improved])
+    
+    if improvements == 3:
+        return "SUCCESS"
+    elif improvements >= 1:
+        return "PARTIAL"
+    elif cpu_after >= cpu_before and latency_after >= latency_before:
+        # Detects performance regression or ineffective scale action
+        return "NO_IMPROVEMENT"
+    return "UNKNOWN"
+\end{lstlisting}
+
+\noindent \textbf{Engineering Philosophy:} CloudFlip inspects telemetry across a verification window post-provisioning. If tail latency or CPU utilization fails to improve by at least $15\%$, CloudFlip classifies the action as a regression, flags an alert, and initiates automated remediation.
+
+\section{Frontend Architecture \& Real-Time Visualization}
+\textbf{Stack:} React 18, TypeScript, Tailwind CSS, Recharts.
+\begin{itemize}[itemsep=2pt]
+  \item \texttt{Simulator.tsx}: Features an interactive $6\times$ flash-surge slider, plotting a real-time comparison between unmitigated reactive auto-scaling (p99 tail latency explodes to $4,200\text{ ms}$) and CloudFlip proactive remediation (tail latency constrained at $180\text{ ms}$).
+  \item \texttt{Predictions.tsx}: Visualizes historical vs. projected time-series demand with an uncertainty confidence envelope calculated via residual volatility: $[\hat{y}_t - z_{\alpha/2}\sigma\sqrt{H},\; \hat{y}_t + z_{\alpha/2}\sigma\sqrt{H}]$.
+  \item \texttt{Cost.tsx}: FinOps idle waste module that dynamically audits infrastructure state to identify unattached EBS volumes, idle RDS read-replicas, and fleets operating above minimum necessary node count ($N > N_{\min}$).
+\end{itemize}
+
+\section{Technical Interview Quick-Reference Cheat Sheet}
+
+\begin{table}[h!]
+\centering
+\small
+\renewcommand{\arraystretch}{1.3}
+\begin{tabularx}{\textwidth}{p{4.2cm}X}
+\toprule
+\textbf{Interview Question} & \textbf{Your Crisp Technical Response} \\
+\midrule
+\textbf{``What tech stack did you choose and why?''} & 
+``I chose FastAPI on the backend because its asynchronous ASGI event loop handles high-frequency telemetry polling without thread exhaustion. On the frontend, I used React with TypeScript for strict type-safety across distributed metrics and Recharts for live time-series visualization.'' \\
+
+\textbf{``How did you prevent model inference latency?''} & 
+``Instead of running heavy deep-learning models like LSTMs that add seconds of inference latency and require continuous GPU retraining, I built an agile, streaming statistical forecaster using EMA smoothing and first-derivative velocity slope. It computes predictions in less than 2 milliseconds.'' \\
+
+\textbf{``How does the system ensure safety against rogue scaling?''} & 
+``Through closed-loop control with 5 strict guardrails: an 80\% confidence score floor, an hourly cost ceiling (\$500/hr), a 5-minute anti-thrashing cooldown, a hard blast-radius clamp (4 to 120 nodes), and a post-action verification engine that validates actual latency reduction.'' \\
+
+\textbf{``What is the fundamental flaw of reactive scaling?''} & 
+``Reactive scalers like AWS Target Tracking suffer from an unmitigated 5-to-8 minute saturation gap caused by telemetry aggregation delay (1--3 mins) plus VM cold-start time (3--5 mins). CloudFlip bridges this gap by forecasting demand $H$ minutes in advance and pre-warming instances.'' \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\end{document}

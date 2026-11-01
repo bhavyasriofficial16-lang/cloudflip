@@ -136,7 +136,7 @@ export default function Pricing() {
 
   const choose = async (planId: string) => {
     if (planId === "enterprise" || planId === "team") {
-      window.location.href = `mailto:bhavyasriofficial16@gmail.com?subject=CloudFlip%20${planId === "team" ? "Team" : "Enterprise"}%20Plan%20Inquiry`;
+      window.location.href = `mailto:sales@cloudflip.me?subject=CloudFlip%20${planId === "team" ? "Team" : "Enterprise"}%20Plan%20Inquiry`;
       return;
     }
     if (planId === "free") {

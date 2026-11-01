@@ -1,0 +1,11 @@
+# CloudFlip Coordinated Vulnerability Disclosure Policy
+# Reference: RFC 9116 (https://www.rfc-editor.org/rfc/rfc9116)
+
+Contact: mailto:security@cloudflip.me
+Expires: 2027-11-01T00:00:00.000Z
+Preferred-Languages: en
+Canonical: https://cloudflip.me/.well-known/security.txt
+Policy: https://cloudflip.me/security
+Acknowledgments: https://cloudflip.me/security
+Encryption: https://cloudflip.me/security
+Hiring: https://cloudflip.me

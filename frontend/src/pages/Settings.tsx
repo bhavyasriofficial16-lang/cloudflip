@@ -586,20 +586,20 @@ export default function Settings() {
                 <div className="space-y-3">
                   <div className="bg-gradient-to-r from-sky-50 to-indigo-50 border border-sky-200 rounded-lg p-3.5">
                     <div className="font-semibold text-[13px] text-slate-900 mb-1 flex items-center justify-between">
-                      <span>Step 1: Deploy CloudFormation Stack</span>
-                      <span className="text-[11px] font-mono bg-sky-200/60 text-sky-800 px-2 py-0.5 rounded">60-sec setup</span>
+                      <span>Step 1: Deploy CloudFormation Stack (100% Read-Only Default)</span>
+                      <span className="text-[11px] font-mono bg-emerald-100 text-emerald-800 font-bold px-2 py-0.5 rounded">Shadow Mode: Read-Only</span>
                     </div>
                     <p className="text-[12px] text-slate-600 mb-3 leading-relaxed">
-                      Creates a secure, least-privilege IAM execution role with your dedicated External ID to prevent confused deputy vulnerabilities.
+                      Creates a secure, least-privilege IAM execution role. By default, <code>EnableAutonomousRemediation</code> is set to <strong>false</strong> (zero write permissions). CloudFlip passively reads CloudWatch telemetry without altering your production infrastructure.
                     </p>
-                    <div className="flex gap-2">
+                    <div className="flex flex-wrap gap-2">
                       <a
                         href={cfQuickUrl || "#"}
                         target="_blank"
                         rel="noreferrer"
                         className="inline-flex items-center gap-1.5 bg-sky-600 hover:bg-sky-700 text-white font-semibold text-[12.5px] px-3.5 py-2 rounded-md shadow-xs transition-colors"
                       >
-                        🚀 Launch in AWS Console ↗
+                        🚀 Launch Read-Only Stack in AWS Console ↗
                       </a>
                       <button
                         type="button"

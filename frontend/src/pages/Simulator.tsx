@@ -728,7 +728,7 @@ export default function Simulator() {
             ⚡ Run Read-Only on AWS (3 Min Setup)
           </Link>
           <a
-            href="mailto:bhavyasriofficial16@gmail.com?subject=CloudFlip%20Live%20SRE%20Walkthrough%20Request"
+            href="mailto:contact@cloudflip.me?subject=CloudFlip%20Live%20SRE%20Walkthrough%20Request"
             className="w-full sm:w-auto text-center border border-slate-700 hover:border-slate-500 text-slate-200 hover:text-white font-medium text-[13.5px] px-4 py-3 rounded-xl transition-colors"
           >
             📅 Book a 15-Min Walkthrough

@@ -40,21 +40,29 @@ export default function Security() {
             Security, Permissions & Data Governance
           </h1>
           <p className="text-[15px] text-slate-600 mt-3 leading-relaxed">
-            CloudFlip is designed from first principles for zero-trust enterprise environments. We strictly enforce the principle of least privilege, separate read and write access, and guarantee fail-open resilience in writing.
+            CloudFlip is architected from first principles for zero-trust cloud environments. We strictly enforce the principle of least privilege, separate read and write access, and guarantee fail-open decoupling in writing.
           </p>
         </div>
 
-        {/* Fail-Open Guarantee Callout */}
+        {/* Fail-Open & Out-of-Band Architecture Guarantee */}
         <div className="bg-sky-50 border-2 border-sky-300 rounded-xl p-5 shadow-xs">
           <div className="flex items-start gap-3">
             <span className="text-[24px]">🛡️</span>
             <div>
               <h2 className="font-display font-bold text-[16px] text-sky-950">
-                The Fail-Open Architectural Guarantee (In Writing)
+                Out-of-Band & Fail-Open Architectural Guarantee (In Writing)
               </h2>
               <p className="text-[13.5px] text-sky-900 mt-1 leading-relaxed">
-                CloudFlip operates entirely out-of-band via asynchronous AWS CloudWatch APIs. CloudFlip does <strong>not</strong> sit in your application’s critical network path. If CloudFlip experiences a complete service disruption, <strong>your application and AWS infrastructure will continue running with zero impact</strong>.
+                CloudFlip operates entirely out-of-band via asynchronous AWS CloudWatch APIs. CloudFlip does <strong>not</strong> proxy user traffic, sit in your application’s critical network path, or intercept live HTTP requests:
               </p>
+              <ul className="list-disc pl-5 mt-2 space-y-1 text-[13px] text-sky-950">
+                <li>
+                  <strong>In Shadow Mode (Default):</strong> CloudFlip is 100% read-only with zero write permissions. Should any CloudFlip service disruption occur, <strong>your production services and AWS infrastructure remain 100% unaffected</strong>.
+                </li>
+                <li>
+                  <strong>In Autonomous Mode:</strong> Remediations execute asynchronously via AWS Auto Scaling APIs strictly within customer-defined guardrails. If CloudFlip experiences a disruption or becomes unreachable, your existing cloud VMs continue running normally without interruption.
+                </li>
+              </ul>
             </div>
           </div>
         </div>
@@ -65,7 +73,7 @@ export default function Security() {
             1. Access Model & Dual IAM Architecture
           </h2>
           <p className="text-[14px] text-slate-600 leading-relaxed">
-            We never ask for root credentials or static long-lived secret keys. CloudFlip links to your cloud environment via AWS Security Token Service (STS) Cross-Account IAM Roles secured by an account-specific <code className="text-sky-700 bg-slate-100 px-1 py-0.5 rounded text-[12.5px]">ExternalID</code> to prevent Confused Deputy attacks.
+            We never request root credentials or static AWS access keys. CloudFlip connects to your cloud environment exclusively through AWS Security Token Service (STS) Cross-Account IAM Roles protected by a tenant-unique <code className="text-sky-700 bg-slate-100 px-1 py-0.5 rounded text-[12.5px]">ExternalID</code> to eliminate Confused Deputy vulnerabilities.
           </p>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
@@ -74,16 +82,17 @@ export default function Security() {
                 Default: 100% Read-Only
               </span>
               <h3 className="font-display font-bold text-[16px] text-slate-900 mt-2 mb-1">
-                Telemetry Ingestion Role
+                Telemetry Discovery Policy
               </h3>
               <p className="text-[12.5px] text-slate-600 leading-relaxed mb-3">
-                Used to pull historical CloudWatch trends and inventory topology. Structurally incapable of altering any resource.
+                Default configuration deployed via our 1-click CloudFormation template. Structurally incapable of altering any resource.
               </p>
               <div className="font-mono text-[11px] text-slate-700 bg-white p-3 rounded-lg border border-slate-200 space-y-1">
                 <div>• <code className="text-sky-700">cloudwatch:GetMetricData</code></div>
                 <div>• <code className="text-sky-700">cloudwatch:ListMetrics</code></div>
                 <div>• <code className="text-sky-700">ec2:DescribeInstances</code></div>
                 <div>• <code className="text-sky-700">autoscaling:Describe*</code></div>
+                <div>• <code className="text-sky-700">elasticloadbalancing:Describe*</code></div>
               </div>
             </div>
 
@@ -92,16 +101,15 @@ export default function Security() {
                 Opt-In: Scoped Remediation
               </span>
               <h3 className="font-display font-bold text-[16px] text-slate-900 mt-2 mb-1">
-                Scaling Action Role
+                Scaling Action Policy
               </h3>
               <p className="text-[12.5px] text-slate-600 leading-relaxed mb-3">
-                Activated only if you opt into Approval or Autonomous remediation modes. Scoped strictly to target Auto Scaling Groups.
+                Deployed only if you explicitly set <code className="text-purple-700 font-mono text-[11px]">EnableAutonomousRemediation: true</code>. Scoped strictly to target Auto Scaling Groups.
               </p>
               <div className="font-mono text-[11px] text-slate-700 bg-white p-3 rounded-lg border border-slate-200 space-y-1">
                 <div>• <code className="text-sky-700">autoscaling:SetDesiredCapacity</code></div>
-                <div>• <code className="text-sky-700">autoscaling:UpdateAutoScalingGroup</code></div>
-                <div className="text-slate-400 font-sans italic text-[10.5px] pt-1">
-                  *Cannot terminate individual VMs, delete databases, or modify VPCs.
+                <div className="text-slate-500 font-sans italic text-[10.5px] pt-1">
+                  *Cannot terminate individual VMs, delete databases, modify VPC routing, or read customer data.
                 </div>
               </div>
             </div>
@@ -111,7 +119,7 @@ export default function Security() {
         {/* 2. What Data Is Stored */}
         <section className="space-y-4">
           <h2 className="font-display font-bold text-[22px] text-slate-900 border-b border-slate-200 pb-2">
-            2. Data Storage, Retention & Privacy
+            2. Data Ingestion, Retention & Privacy
           </h2>
           <div className="overflow-x-auto">
             <table className="w-full text-left text-[13.5px] border-collapse">
@@ -125,22 +133,22 @@ export default function Security() {
               <tbody className="divide-y divide-slate-100 text-slate-700">
                 <tr>
                   <td className="py-3 font-semibold text-slate-900">CloudWatch Telemetry</td>
-                  <td className="py-3">Aggregated numbers only (CPU %, Memory %, NetworkIn, Request Count, p99 Latency).</td>
+                  <td className="py-3">Aggregated metric numbers only (CPU %, Memory %, NetworkIn, Request Count, p95/p99 Latency).</td>
                   <td className="py-3 font-mono text-[12px]">30 days (rolling purge)</td>
                 </tr>
                 <tr>
                   <td className="py-3 font-semibold text-slate-900">Customer Payloads</td>
-                  <td className="py-3 text-red-600 font-semibold">NEVER. Zero HTTP request payloads, headers, or body text.</td>
-                  <td className="py-3 font-mono text-[12px]">Not ingested</td>
+                  <td className="py-3 text-red-600 font-semibold">NEVER. Zero HTTP request payloads, headers, cookies, or body text.</td>
+                  <td className="py-3 font-mono text-[12px]">Not ingested / No IAM permission</td>
                 </tr>
                 <tr>
                   <td className="py-3 font-semibold text-slate-900">Source Code & PII</td>
                   <td className="py-3 text-red-600 font-semibold">NEVER. Zero access to application databases, code repos, or customer PII.</td>
-                  <td className="py-3 font-mono text-[12px]">Not ingested</td>
+                  <td className="py-3 font-mono text-[12px]">Not ingested / No IAM permission</td>
                 </tr>
                 <tr>
                   <td className="py-3 font-semibold text-slate-900">Action Audit Logs</td>
-                  <td className="py-3">Timestamped record of every simulated or executed scaling event, trigger, and result.</td>
+                  <td className="py-3">Timestamped record of simulated or executed scaling triggers, capacity plans, and verification outcomes.</td>
                   <td className="py-3 font-mono text-[12px]">365 days</td>
                 </tr>
               </tbody>
@@ -154,46 +162,56 @@ export default function Security() {
             3. Safety Guardrails & Emergency Kill Switch
           </h2>
           <p className="text-[14px] text-slate-600 leading-relaxed">
-            Automated systems without strict boundaries are dangerous. CloudFlip enforces programmatic guardrails that cannot be breached:
+            Autonomous cloud scaling requires strict, unbreachable boundaries. CloudFlip enforces programmatic guardrails at the engine layer:
           </p>
 
           <ul className="space-y-2 text-[13.5px] text-slate-700 list-disc pl-5">
-            <li><strong>Hard Instance Ceilings:</strong> You define the maximum allowed instances (e.g. max 16). CloudFlip will never scale past this ceiling under any circumstance.</li>
-            <li><strong>Cooldown Enforcing:</strong> Minimum 15-minute cooldown between automated scaling adjustments to prevent thrashing and flapping.</li>
-            <li><strong>Daily Action Cap:</strong> Hard stop of maximum 6 remediation actions per 24 hours.</li>
-            <li><strong>Instant Kill Switch:</strong> One-click master toggle in Settings that instantly drops all automation back to passive shadow logging.</li>
-            <li><strong>Instant Access Revocation:</strong> You can permanently sever CloudFlip’s connection in 5 seconds by deleting the IAM Role in your AWS Console.</li>
+            <li><strong>Hard Instance Ceilings:</strong> Hard clamps prevent unbounded growth (<code>MAX_SCALE_FACTOR = 3.0</code>; absolute fleet boundaries <code>HARD_MIN = 4</code> and <code>HARD_MAX = 120</code>).</li>
+            <li><strong>Anti-Thrashing Cooldown:</strong> Enforces <code>COOLDOWN_SECONDS = 300</code> (5 minutes) between scaling actions to prevent oscillation (flapping).</li>
+            <li><strong>Hourly Cost Ceiling:</strong> Blocks any scale action that increases burn rate by &gt; $500/hour without explicit human confirmation.</li>
+            <li><strong>Confidence Score Gate:</strong> Aborts autonomous execution if model uncertainty is high (&lt; 0.80 confidence).</li>
+            <li><strong>Instant Kill Switch:</strong> Master toggle in Settings that instantly drops all automation back to passive read-only Shadow logging.</li>
+            <li><strong>Instant Access Revocation:</strong> You can permanently disconnect CloudFlip in seconds by deleting the IAM Role in your AWS Console.</li>
           </ul>
         </section>
 
         {/* 4. Encryption & Infrastructure */}
         <section className="space-y-4">
           <h2 className="font-display font-bold text-[22px] text-slate-900 border-b border-slate-200 pb-2">
-            4. Encryption & Tenant Isolation
+            4. Encryption, Tenant Isolation & Compliance Status
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-center">
             <div className="p-4 rounded-xl border border-slate-200 bg-slate-50">
               <div className="text-[20px] mb-1">🔐</div>
               <div className="font-display font-bold text-[14px] text-slate-900">In Transit</div>
-              <p className="text-[12px] text-slate-500 mt-1">TLS 1.3 enforced on all API endpoints and telemetry streams.</p>
+              <p className="text-[12px] text-slate-500 mt-1">TLS 1.2 & TLS 1.3 enforced on all API endpoints and telemetry streams.</p>
             </div>
             <div className="p-4 rounded-xl border border-slate-200 bg-slate-50">
               <div className="text-[20px] mb-1">🗄️</div>
               <div className="font-display font-bold text-[14px] text-slate-900">At Rest</div>
-              <p className="text-[12px] text-slate-500 mt-1">AES-256 encryption across PostgreSQL storage volumes and caches.</p>
+              <p className="text-[12px] text-slate-500 mt-1">AES-256 volume encryption across PostgreSQL database volumes.</p>
             </div>
             <div className="p-4 rounded-xl border border-slate-200 bg-slate-50">
               <div className="text-[20px] mb-1">🏢</div>
               <div className="font-display font-bold text-[14px] text-slate-900">Tenant Isolation</div>
-              <p className="text-[12px] text-slate-500 mt-1">Row-Level Security (RLS) guarantees zero cross-tenant data leakage.</p>
+              <p className="text-[12px] text-slate-500 mt-1">Row-Level Security (RLS) and strict account partitioning prevent cross-tenant access.</p>
             </div>
+          </div>
+
+          <div className="bg-slate-50 border border-slate-200 rounded-xl p-5 mt-3">
+            <h3 className="font-display font-bold text-[15px] text-slate-900 mb-1">
+              Honest Compliance & Certification Transparency
+            </h3>
+            <p className="text-[13px] text-slate-600 leading-relaxed">
+              CloudFlip is an agile engineering venture founded by Bhavya Sri Boddeti. We do <strong>not</strong> currently hold a formal SOC 2 Type II attestation report (planned on our enterprise compliance roadmap). However, our architecture is built from day one in strict adherence to SOC 2 Trust Services Criteria: zero long-lived credentials, scoped cross-account STS delegation, out-of-band monitoring, end-to-end encryption, and full action audit logging.
+            </p>
           </div>
         </section>
 
         {/* 5. Automated Bot Defense & Human Verification */}
         <section className="space-y-4">
           <h2 className="font-display font-bold text-[22px] text-slate-900 border-b border-slate-200 pb-2">
-            5. Automated Bot Defense & Human Verification Challenge
+            5. Automated Bot Defense & Vulnerability Disclosure
           </h2>
           <p className="text-[14px] text-slate-600 leading-relaxed">
             CloudFlip deploys multi-tiered edge bot defense to protect predictive telemetry pipelines against distributed brute-force attacks, scrapers, and credential stuffing.
@@ -212,26 +230,34 @@ export default function Security() {
               />
             </div>
           </div>
+          <p className="text-[13px] text-slate-600">
+            For coordinated vulnerability disclosure, our public RFC 9116 security policy is published at{" "}
+            <a href="/.well-known/security.txt" target="_blank" className="font-mono text-sky-600 underline">
+              /.well-known/security.txt
+            </a>.
+          </p>
         </section>
 
         {/* Contact Security Team */}
         <div className="border border-slate-200 rounded-xl p-6 bg-slate-50 flex flex-col sm:flex-row items-center justify-between gap-4">
           <div>
-            <div className="font-display font-bold text-[15px] text-slate-900">Need a Security Review or Vendor Assessment?</div>
-            <p className="text-[12.5px] text-slate-500 mt-0.5">We provide completed SIG-Lite questionnaires and standard DPAs for prospective pilots.</p>
+            <div className="font-display font-bold text-[15px] text-slate-900">Need a Security Review or Enterprise DPA?</div>
+            <p className="text-[12.5px] text-slate-500 mt-0.5">We provide completed vendor security questionnaires (SIG-Lite / CAIQ) and standard Data Processing Agreements.</p>
           </div>
-          <a
-            href="mailto:bhavyasriofficial16@gmail.com?subject=CloudFlip%20Security%20Review%20Request"
-            className="bg-slate-900 text-white font-semibold text-[13px] px-4 py-2.5 rounded-lg hover:bg-slate-800 transition-colors shrink-0"
-          >
-            Contact Security Officer
-          </a>
+          <div className="flex gap-2">
+            <a
+              href="mailto:security@cloudflip.me?subject=CloudFlip%20Security%20Review%20Request"
+              className="bg-slate-900 text-white font-semibold text-[13px] px-4 py-2.5 rounded-lg hover:bg-slate-800 transition-colors shrink-0"
+            >
+              Contact Security: security@cloudflip.me
+            </a>
+          </div>
         </div>
       </main>
 
       <footer className="border-t border-slate-200 py-8 bg-slate-50/70 text-slate-500 text-[12px] mt-12">
         <div className="max-w-[880px] mx-auto px-4 sm:px-8 flex flex-col sm:flex-row items-center justify-between gap-4">
-          <div>© 2026 CloudFlip Platform · Enterprise Security Architecture.</div>
+          <div>© 2026 CloudFlip Platform · Enterprise Security Architecture. Operated by Bhavya Sri Boddeti.</div>
           <div className="flex items-center gap-4">
             <Link to="/terms" className="hover:text-slate-800">Terms of Service</Link>
             <Link to="/privacy" className="hover:text-slate-800">Privacy Policy</Link>

@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>CloudFlip: Enterprise Security Overview & Vendor Assessment (SIG-Lite / CAIQ)</title>
+<style>
+  @page {
+    size: letter;
+    margin: 0.6in 0.7in;
+  }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    line-height: 1.5;
+    color: #1e293b;
+    background: #f8fafc;
+    margin: 0;
+    padding: 30px 20px;
+    font-size: 10pt;
+  }
+  .card {
+    max-width: 860px;
+    margin: 0 auto 30px auto;
+    background: #ffffff;
+    border-radius: 10px;
+    padding: 35px 42px;
+    box-shadow: 0 4px 6px -1px rgba(0,0,0,0.08);
+  }
+  @media print {
+    body { background: #ffffff; padding: 0; }
+    .card { box-shadow: none; padding: 0; max-width: 100%; margin: 0; }
+    .no-print { display: none; }
+    .page-break { page-break-before: always; }
+  }
+  .header {
+    border-bottom: 2px solid #0f172a;
+    padding-bottom: 14px;
+    margin-bottom: 20px;
+  }
+  .tag {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 4px;
+    font-size: 8.5pt;
+    font-weight: 700;
+    text-transform: uppercase;
+    background: #e0f2fe;
+    color: #0369a1;
+  }
+  h1 {
+    font-size: 18pt;
+    color: #0f172a;
+    margin: 8px 0 4px 0;
+    font-weight: 800;
+  }
+  .subhead {
+    font-size: 9.5pt;
+    color: #475569;
+  }
+  h2 {
+    font-size: 12.5pt;
+    color: #0284c7;
+    border-bottom: 1.5px solid #e0f2fe;
+    padding-bottom: 4px;
+    margin-top: 24px;
+    margin-bottom: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  h3 {
+    font-size: 10.5pt;
+    color: #0f172a;
+    margin-top: 14px;
+    margin-bottom: 6px;
+  }
+  p { margin: 6px 0; }
+  ul { margin: 6px 0; padding-left: 20px; }
+  li { margin-bottom: 4px; }
+  .box {
+    background: #f0f9ff;
+    border-left: 4px solid #0284c7;
+    padding: 12px 16px;
+    border-radius: 0 6px 6px 0;
+    margin: 12px 0;
+    font-size: 9.5pt;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 14px 0;
+    font-size: 9pt;
+  }
+  th, td {
+    padding: 8px 10px;
+    text-align: left;
+    border-bottom: 1px solid #e2e8f0;
+    vertical-align: top;
+  }
+  th {
+    background: #f1f5f9;
+    color: #334155;
+    font-weight: 700;
+  }
+  tr:hover { background: #f8fafc; }
+  .btn-print {
+    display: inline-block;
+    background: #0284c7;
+    color: #ffffff;
+    font-weight: 600;
+    padding: 8px 18px;
+    border-radius: 6px;
+    text-decoration: none;
+    cursor: pointer;
+    border: none;
+  }
+</style>
+</head>
+<body>
+
+<div class="no-print" style="text-align: center; margin-bottom: 20px;">
+  <button class="btn-print" onclick="window.print()">🖨️ Print / Save as PDF</button>
+</div>
+
+<div class="card">
+  <div class="header">
+    <span class="tag">Enterprise Vendor Assessment Document</span>
+    <h1>CloudFlip: Security Whitepaper &amp; SIG-Lite Questionnaire</h1>
+    <div class="subhead">
+      <strong>Product:</strong> CloudFlip.ai &bull; <strong>Operated by:</strong> CloudFlip Systems / Bhavya Sri Boddeti (Founder &amp; Systems Engineer)<br>
+      <strong>Security:</strong> security@cloudflip.me &bull; <strong>Legal / DPA:</strong> legal@cloudflip.me &bull; <strong>Policy (RFC 9116):</strong> cloudflip.me/.well-known/security.txt
+    </div>
+  </div>
+
+  <h2>Part 1: One-Page Executive Security Overview</h2>
+
+  <h3>1. Architecture &amp; Threat Model</h3>
+  <p>
+    CloudFlip provides predictive cloud infrastructure telemetry, capacity simulation, and automated remediation recommendations. It is designed with an out-of-band, zero-trust architecture:
+  </p>
+  <ul>
+    <li><strong>Out-of-Band Telemetry:</strong> CloudFlip never sits in the critical network path of your applications. It does not proxy user traffic, inspect HTTP packets, or terminate customer TLS sessions.</li>
+    <li><strong>100% Read-Only Default (Shadow Mode):</strong> The 1-click CloudFormation template (<code>cloudflip-onboarding.yaml</code>) defaults to <code>EnableAutonomousRemediation: false</code>. CloudFlip begins with passive read-only access to CloudWatch metric aggregates and resource metadata.</li>
+    <li><strong>Optional Opt-In Remediation:</strong> Write permissions (<code>autoscaling:SetDesiredCapacity</code>) are enabled only if explicitly configured by the customer. Scaling actions are bounded by strict invariant guardrails (3.0x blast-radius ceiling, 5-minute anti-thrashing cooldown, $500/hr cost ceiling).</li>
+  </ul>
+
+  <h3>2. Authentication &amp; Credential Governance</h3>
+  <ul>
+    <li><strong>Zero Long-Lived Keys:</strong> CloudFlip never requests AWS root credentials, IAM access keys, or secret keys.</li>
+    <li><strong>STS Cross-Account AssumeRole:</strong> Authentication is conducted via AWS Security Token Service (STS) Cross-Account IAM Roles.</li>
+    <li><strong>Confused Deputy Protection:</strong> Every cross-account role requires a customer-unique <code>sts:ExternalId</code> generated cryptographically by CloudFlip.</li>
+    <li><strong>Instant Customer Revocation:</strong> Customers retain 100% sovereign control. Deleting the CloudFormation stack or IAM role in the AWS Console permanently severs CloudFlip's access within seconds.</li>
+  </ul>
+
+  <h3>3. Data Classification &amp; Privacy Boundary</h3>
+  <ul>
+    <li><strong>Data Never Ingested:</strong> Zero customer PII, zero database contents, zero HTTP request/response payloads, zero source code, zero environment secrets.</li>
+    <li><strong>Data Ingested:</strong> Aggregated numeric time-series (CPU%, network I/O, request counts, p95/p99 tail latency) and resource identifiers (instance types, AZs, ASG names).</li>
+    <li><strong>Storage &amp; Encryption:</strong> TLS 1.2/1.3 enforced in transit; AES-256 volume encryption at rest across PostgreSQL databases (AWS KMS managed keys). Rolling 30-day purge for telemetry series. Upon disconnection, role references are deleted within 24 hours, and historical telemetry is purged within 14 calendar days.</li>
+  </ul>
+
+  <h3>4. Fail-Open Reliability Guarantee</h3>
+  <div class="box">
+    <strong>Shadow Mode:</strong> CloudFlip is structurally incapable of affecting production services. If CloudFlip experiences a complete service disruption, your applications and AWS infrastructure continue running with <strong>100% zero impact</strong>.<br>
+    <strong>Autonomous Mode:</strong> If CloudFlip becomes unreachable, all customer EC2/ASG instances remain at their current desired capacity without interruption.
+  </div>
+
+  <div class="page-break"></div>
+
+  <h2>Part 2: Vendor Security Questionnaire (Standard SIG-Lite / CAIQ Answers)</h2>
+
+  <table>
+    <thead>
+      <tr>
+        <th style="width: 8%;">#</th>
+        <th style="width: 37%;">Security Question</th>
+        <th style="width: 55%;">CloudFlip Official Response</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>1.1</strong></td>
+        <td><strong>Does CloudFlip hold a SOC 2 Type II attestation?</strong></td>
+        <td><strong>Pre-SOC 2 (In Progress).</strong> CloudFlip is an agile engineering company founded by Bhavya Sri Boddeti. We do not currently hold a formal SOC 2 Type II report (on our enterprise compliance roadmap). However, our technical infrastructure is architected in direct compliance with SOC 2 Trust Services Criteria (least privilege, out-of-band ingestion, TLS 1.3/AES-256 encryption, zero long-lived credentials, and immutable audit logs).</td>
+      </tr>
+      <tr>
+        <td><strong>1.2</strong></td>
+        <td><strong>Does CloudFlip offer a standard Data Processing Agreement (DPA)?</strong></td>
+        <td><strong>Yes.</strong> CloudFlip provides a standard DPA incorporating European Commission Standard Contractual Clauses (SCCs) and India DPDP Act 2023 provisions upon request. Contact <code>legal@cloudflip.me</code>.</td>
+      </tr>
+      <tr>
+        <td><strong>2.1</strong></td>
+        <td><strong>How does CloudFlip access our AWS environment?</strong></td>
+        <td>Via an AWS STS Cross-Account IAM Role created by your administrator using our open CloudFormation template. A unique tenant <code>ExternalID</code> is enforced on every <code>sts:AssumeRole</code> call.</td>
+      </tr>
+      <tr>
+        <td><strong>2.2</strong></td>
+        <td><strong>Can CloudFlip access customer data or databases?</strong></td>
+        <td><strong>No.</strong> Our IAM policy is strictly restricted to CloudWatch telemetry and EC2/ASG metadata. It contains no permissions for Amazon S3 (<code>s3:GetObject</code>), DynamoDB, RDS Data API, or AWS Secrets Manager.</td>
+      </tr>
+      <tr>
+        <td><strong>2.3</strong></td>
+        <td><strong>Can CloudFlip terminate production databases or delete VMs?</strong></td>
+        <td><strong>No.</strong> Even when autonomous remediation is enabled, the policy is narrowly scoped to <code>autoscaling:SetDesiredCapacity</code>. CloudFlip cannot terminate standalone EC2 instances, delete RDS clusters, or modify VPC security groups.</td>
+      </tr>
+      <tr>
+        <td><strong>3.1</strong></td>
+        <td><strong>Where is customer telemetry hosted?</strong></td>
+        <td>Primary infrastructure is hosted in Amazon Web Services (AWS) in the <strong>ap-south-1 (Mumbai)</strong> region, with multi-region CloudWatch read connectivity across US and European AWS regions.</td>
+      </tr>
+      <tr>
+        <td><strong>3.2</strong></td>
+        <td><strong>Who are CloudFlip’s sub-processors?</strong></td>
+        <td>AWS (compute and database hosting), Cloudflare (DNS, DDoS defense, TLS termination), Skydo &amp; Razorpay (PCI-DSS compliant payment processing), and Supabase (authentication metadata).</td>
+      </tr>
+      <tr>
+        <td><strong>4.1</strong></td>
+        <td><strong>How are data access and deletion requests handled?</strong></td>
+        <td>We acknowledge formal privacy requests within <strong>48 hours</strong> and complete data export or permanent deletion within <strong>30 calendar days</strong>. Contact <code>privacy@cloudflip.me</code>.</td>
+      </tr>
+      <tr>
+        <td><strong>4.2</strong></td>
+        <td><strong>What happens to data when an account is terminated?</strong></td>
+        <td>All telemetry ingestion stops immediately. IAM role references are deleted within <strong>24 hours</strong>, and cached metric aggregations are permanently purged from active storage within <strong>14 calendar days</strong>.</td>
+      </tr>
+      <tr>
+        <td><strong>5.1</strong></td>
+        <td><strong>How does CloudFlip handle vulnerability reporting?</strong></td>
+        <td>We follow RFC 9116 coordinated vulnerability disclosure. Our policy is published at <code>/.well-known/security.txt</code>. Security researchers and customers can report issues to <code>security@cloudflip.me</code>.</td>
+      </tr>
+      <tr>
+        <td><strong>5.2</strong></td>
+        <td><strong>What guardrails prevent automated over-scaling?</strong></td>
+        <td>5 invariant guardrails: 80% model confidence gate, $500/hr burn rate ceiling, 5-minute anti-thrashing cooldown, 3.0x blast-radius limit (hard clamps 4 to 120 instances), and post-action metric verification with auto-rollback.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div style="margin-top: 25px; padding-top: 15px; border-top: 1px dashed #cbd5e1; font-size: 8.5pt; color: #64748b; text-align: center;">
+    CloudFlip Platform &bull; Operated by Bhavya Sri Boddeti &bull; Visakhapatnam, Andhra Pradesh, India &bull; Enterprise Legal &amp; DPA: legal@cloudflip.me
+  </div>
+</div>
+
+</body>
+</html>
