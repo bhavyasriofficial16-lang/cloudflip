@@ -12,12 +12,17 @@ settings = get_settings()
 
 class StripeClient:
     def __init__(self):
-        self.enabled = bool(settings.stripe_secret_key)
-        if self.enabled:
-            import stripe
+        self.enabled = False
+        if bool(settings.stripe_secret_key):
+            try:
+                import stripe
 
-            stripe.api_key = settings.stripe_secret_key
-            self._stripe = stripe
+                stripe.api_key = settings.stripe_secret_key
+                self._stripe = stripe
+                self.enabled = True
+            except ImportError:
+                self.enabled = False
+
 
     def _require(self):
         if not self.enabled:

@@ -74,6 +74,10 @@ Resources:
               - 'ec2:DescribeInstances'
               - 'ec2:DescribeInstanceStatus'
               - 'ec2:DescribeRegions'
+              - 'ec2:DescribeVolumes'
+              - 'ec2:DescribeVolumeStatus'
+              - 'ec2:DescribeAddresses'
+              - 'ec2:DescribeSnapshots'
               - 'autoscaling:DescribeAutoScalingGroups'
               - 'autoscaling:DescribeAutoScalingInstances'
               - 'autoscaling:DescribeScalingActivities'
@@ -83,6 +87,7 @@ Resources:
               - 'elasticloadbalancing:DescribeTargetHealth'
               - 'tag:GetResources'
             Resource: '*'
+
 
   CloudFlipRemediationPolicy:
     Type: AWS::IAM::Policy

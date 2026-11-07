@@ -1,15 +1,19 @@
-# CloudFlip.ai
+# CloudFlip (cloudflip.me)
 
-AI-powered predictive cloud infrastructure platform.
-**Flip from reactive to predictive.**
+**Find your AWS waste and reliability risks in 10 minutes. Read-only. Free.**
 
-This is a working MVP: a real FastAPI backend with an anomaly
-detector, prediction engine, capacity/bottleneck engine, what-if
-simulator, recommendation engine, and action/verification engine —
-plus a React + TypeScript dashboard wired to it live. It runs entirely
-in **demo mode** out of the box (synthetic data, no AWS account
-needed) and is structured so a real AWS connection is a config change,
-not a rewrite.
+CloudFlip audits connected AWS accounts (via least-privilege 1-click CloudFormation or demo mode) across 8 categories:
+1. **Idle EC2 Compute** (low CPU/network across 14-day window)
+2. **Oversized Instances** (recommending safe family downsize or Graviton migration)
+3. **Unattached EBS Volumes** (detached volumes in `available` state)
+4. **Unused Elastic IPs** (unassociated static IPs incurring AWS penalties)
+5. **Old Snapshots** (manual snapshots >90 days old with no active AMI/volume)
+6. **Idle Load Balancers** (ALBs/NLBs with 0 or negligible traffic over 14 days)
+7. **Poorly Configured Auto Scaling Groups** (Min == Max, single-AZ hazards, cooldown conflicts)
+8. **Basic Saturation Risks** (database connection & queue depth trending to exhaustion)
+
+Every finding provides transparent formulas, pricing sources, 14-day metric evidence, risk levels, and copy-paste AWS CLI / Terraform remediation code.
+
 
 See `docs/ARCHITECTURE.md` for exactly what's implemented vs. stubbed.
 

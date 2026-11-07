@@ -107,5 +107,15 @@ export const api = {
   startDaemon: () => request<any>("/api/daemon/start", { method: "POST" }),
   stopDaemon: () => request<any>("/api/daemon/stop", { method: "POST" }),
   triggerDaemonSweep: () => request<any>("/api/daemon/trigger", { method: "POST" }),
+  startScan: (payload: { cloud_account_id?: string; region?: string; is_demo?: boolean } = {}) =>
+    request<any>("/api/scan/start", {
+      method: "POST",
+      body: JSON.stringify(payload),
+    }),
+  getScanStatus: (scanId: string) => request<any>(`/api/scan/${scanId}/status`),
+  getScan: (scanId: string) => request<any>(`/api/scan/${scanId}`),
+  getScans: () => request<any[]>("/api/scans"),
+  getSampleScan: () => request<any>("/api/scan/sample"),
 };
+
 

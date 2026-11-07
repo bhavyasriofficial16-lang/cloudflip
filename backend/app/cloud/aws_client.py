@@ -115,11 +115,11 @@ class AWSClient:
             logger.error(f"Error discovering EC2 instances: {e}")
             return []
 
-    def discover_asg(self) -> List[Dict[str, Any]]:
+    def discover_asg(self, role_arn: Optional[str] = None, region: Optional[str] = None) -> List[Dict[str, Any]]:
         if not self.enabled:
             return []
         try:
-            session = self.get_session()
+            session = self.get_session(region=region, role_arn=role_arn)
             asg_client = session.client("autoscaling")
             resp = asg_client.describe_auto_scaling_groups()
             out = []
@@ -128,18 +128,124 @@ class AWSClient:
                     "aws_resource_id": group["AutoScalingGroupName"],
                     "name": group["AutoScalingGroupName"],
                     "resource_type": "ASG",
-                    "region": settings.aws_region,
+                    "region": region or settings.aws_region,
                     "status": "healthy",
                     "metadata": {
                         "min_size": group.get("MinSize"),
                         "max_size": group.get("MaxSize"),
                         "desired_capacity": group.get("DesiredCapacity"),
+                        "default_cooldown": group.get("DefaultCooldown"),
+                        "availability_zones": group.get("AvailabilityZones", []),
+                        "vpc_zone_identifier": group.get("VPCZoneIdentifier"),
                         "instances": len(group.get("Instances", [])),
                     }
                 })
             return out
         except Exception as e:
             logger.error(f"Error discovering Auto Scaling Groups: {e}")
+            return []
+
+    def discover_ebs_volumes(self, role_arn: Optional[str] = None, region: Optional[str] = None) -> List[Dict[str, Any]]:
+        """Read-only discovery of EBS volumes (identifying unattached volumes)."""
+        if not self.enabled:
+            return []
+        try:
+            session = self.get_session(region=region, role_arn=role_arn)
+            ec2 = session.client("ec2")
+            resp = ec2.describe_volumes()
+            out = []
+            for vol in resp.get("Volumes", []):
+                tags = {t["Key"]: t["Value"] for t in vol.get("Tags", [])}
+                attachments = vol.get("Attachments", [])
+                out.append({
+                    "volume_id": vol["VolumeId"],
+                    "name": tags.get("Name", vol["VolumeId"]),
+                    "size_gb": vol.get("Size", 0),
+                    "volume_type": vol.get("VolumeType", "gp3"),
+                    "state": vol.get("State"),  # 'available' means unattached
+                    "create_time": vol.get("CreateTime").isoformat() if vol.get("CreateTime") else None,
+                    "is_attached": len(attachments) > 0,
+                    "attachments": attachments,
+                    "tags": tags,
+                })
+            return out
+        except Exception as e:
+            logger.error(f"Error discovering EBS volumes: {e}")
+            return []
+
+    def discover_elastic_ips(self, role_arn: Optional[str] = None, region: Optional[str] = None) -> List[Dict[str, Any]]:
+        """Read-only discovery of Elastic IPs (identifying unassociated IPs)."""
+        if not self.enabled:
+            return []
+        try:
+            session = self.get_session(region=region, role_arn=role_arn)
+            ec2 = session.client("ec2")
+            resp = ec2.describe_addresses()
+            out = []
+            for addr in resp.get("Addresses", []):
+                tags = {t["Key"]: t["Value"] for t in addr.get("Tags", [])}
+                is_associated = bool(addr.get("AssociationId") or addr.get("InstanceId"))
+                out.append({
+                    "allocation_id": addr.get("AllocationId", addr.get("PublicIp")),
+                    "public_ip": addr.get("PublicIp"),
+                    "name": tags.get("Name", addr.get("PublicIp")),
+                    "is_associated": is_associated,
+                    "instance_id": addr.get("InstanceId"),
+                    "network_interface_id": addr.get("NetworkInterfaceId"),
+                    "tags": tags,
+                })
+            return out
+        except Exception as e:
+            logger.error(f"Error discovering Elastic IPs: {e}")
+            return []
+
+    def discover_snapshots(self, role_arn: Optional[str] = None, region: Optional[str] = None) -> List[Dict[str, Any]]:
+        """Read-only discovery of self-owned EBS snapshots."""
+        if not self.enabled:
+            return []
+        try:
+            session = self.get_session(region=region, role_arn=role_arn)
+            ec2 = session.client("ec2")
+            resp = ec2.describe_snapshots(OwnerIds=["self"])
+            out = []
+            for snap in resp.get("Snapshots", []):
+                tags = {t["Key"]: t["Value"] for t in snap.get("Tags", [])}
+                out.append({
+                    "snapshot_id": snap["SnapshotId"],
+                    "volume_id": snap.get("VolumeId"),
+                    "size_gb": snap.get("VolumeSize", 0),
+                    "start_time": snap.get("StartTime").isoformat() if snap.get("StartTime") else None,
+                    "description": snap.get("Description", ""),
+                    "state": snap.get("State"),
+                    "tags": tags,
+                })
+            return out
+        except Exception as e:
+            logger.error(f"Error discovering snapshots: {e}")
+            return []
+
+    def discover_load_balancers(self, role_arn: Optional[str] = None, region: Optional[str] = None) -> List[Dict[str, Any]]:
+        """Read-only discovery of Application / Network Load Balancers."""
+        if not self.enabled:
+            return []
+        try:
+            session = self.get_session(region=region, role_arn=role_arn)
+            elbv2 = session.client("elbv2")
+            resp = elbv2.describe_load_balancers()
+            out = []
+            for lb in resp.get("LoadBalancers", []):
+                out.append({
+                    "load_balancer_arn": lb["LoadBalancerArn"],
+                    "name": lb["LoadBalancerName"],
+                    "dns_name": lb.get("DNSName"),
+                    "type": lb.get("Type", "application"),
+                    "scheme": lb.get("Scheme"),
+                    "state": lb.get("State", {}).get("Code"),
+                    "created_time": lb.get("CreatedTime").isoformat() if lb.get("CreatedTime") else None,
+                })
+            return out
+        except Exception as e:
+            logger.error(f"Error discovering load balancers: {e}")
             return []
 
     def discover_rds(self) -> List[Dict[str, Any]]:
@@ -167,6 +273,7 @@ class AWSClient:
         except Exception as e:
             logger.error(f"Error discovering RDS DB instances: {e}")
             return []
+
 
     # ---- Actions -----------------------------------------------------
     def set_asg_desired_capacity(self, asg_name: str, desired: int) -> Dict[str, Any]:

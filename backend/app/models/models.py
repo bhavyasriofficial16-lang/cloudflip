@@ -297,3 +297,50 @@ class SurgeEvent(Base):
     expected_multiplier = Column(Float, nullable=False)
     is_user_assumption = Column(Boolean, default=True)
     created_at = Column(DateTime, default=datetime.utcnow)
+
+
+class ScanRun(Base):
+    """A point-in-time savings and risk scan over a connected AWS account (or demo environment)."""
+    __tablename__ = "scan_runs"
+    id = Column(String, primary_key=True, default=gen_uuid)
+    cloud_account_id = Column(String, ForeignKey("cloud_accounts.id"), nullable=True)
+    user_id = Column(String, ForeignKey("users.id"), nullable=True)
+    status = Column(String, default="pending")  # pending | running | completed | failed
+    progress_percent = Column(Integer, default=0)
+    current_step = Column(String, default="Initializing scan")
+    started_at = Column(DateTime, default=datetime.utcnow)
+    completed_at = Column(DateTime, nullable=True)
+    total_monthly_waste = Column(Float, default=0.0)
+    currency = Column(String, default="USD")
+    risk_summary = Column(JSON, default=dict)  # {"zero": 0, "low": 0, "medium": 0, "high": 0, "critical": 0}
+    resource_count_scanned = Column(Integer, default=0)
+    findings_count = Column(Integer, default=0)
+    is_sample_or_simulation = Column(Boolean, default=False)
+
+    findings = relationship("ScanFinding", back_populates="scan_run", cascade="all, delete-orphan", order_by="desc(ScanFinding.estimated_monthly_saving)")
+
+
+class ScanFinding(Base):
+    """An individual actionable finding (waste item or reliability risk) discovered during a scan."""
+    __tablename__ = "scan_findings"
+    id = Column(String, primary_key=True, default=gen_uuid)
+    scan_id = Column(String, ForeignKey("scan_runs.id"), nullable=False, index=True)
+    resource_id = Column(String, nullable=False, index=True)
+    resource_name = Column(String, nullable=False)
+    resource_type = Column(String, nullable=False)  # EC2 | EBS | RDS | EIP | Snapshot | ALB | ASG | Saturation
+    category = Column(String, nullable=False)  # idle_compute | oversized_instance | unattached_ebs | unused_eip | old_snapshot | idle_lb | asg_misconfig | saturation_risk
+    issue = Column(String, nullable=False)
+    risk_level = Column(String, default="Low")  # Zero | Low | Medium | High | Critical
+    estimated_monthly_saving = Column(Float, default=0.0)
+    currency = Column(String, default="USD")
+    pricing_formula = Column(Text, nullable=False)
+    pricing_source = Column(String, nullable=False)
+    evidence = Column(JSON, default=dict)
+    recommended_fix = Column(Text, nullable=False)
+    cli_remediation = Column(Text, nullable=True)
+    terraform_remediation = Column(Text, nullable=True)
+    confidence = Column(String, default="High")  # High | Medium | Low
+    created_at = Column(DateTime, default=datetime.utcnow)
+
+    scan_run = relationship("ScanRun", back_populates="findings")
+

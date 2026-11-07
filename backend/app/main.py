@@ -7,7 +7,7 @@ from fastapi.responses import JSONResponse, PlainTextResponse
 from app.config.settings import get_settings
 from app.database.session import Base, engine, SessionLocal
 from app.services.seed_demo import seed
-from app.api import resources, metrics, predictions, anomalies, bottlenecks, simulations, recommendations, actions, cost, activity, billing, settings as settings_api, daemon
+from app.api import resources, metrics, predictions, anomalies, bottlenecks, simulations, recommendations, actions, cost, activity, billing, settings as settings_api, daemon, scan
 from app.services.daemon import telemetry_daemon
 
 settings = get_settings()
@@ -80,6 +80,8 @@ app.include_router(activity.router)
 app.include_router(billing.router)
 app.include_router(settings_api.router)
 app.include_router(daemon.router)
+app.include_router(scan.router)
+
 
 
 @app.on_event("startup")

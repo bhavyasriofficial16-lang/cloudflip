@@ -158,3 +158,65 @@ class ActivityOut(BaseModel):
 
 class DiscoverRequest(BaseModel):
     region: str = "ap-south-1"
+
+
+class ScanFindingOut(BaseModel):
+    id: str
+    scan_id: str
+    resource_id: str
+    resource_name: str
+    resource_type: str
+    category: str
+    issue: str
+    risk_level: str
+    estimated_monthly_saving: float
+    currency: str = "USD"
+    pricing_formula: str
+    pricing_source: str
+    evidence: dict = {}
+    recommended_fix: str
+    cli_remediation: Optional[str] = None
+    terraform_remediation: Optional[str] = None
+    confidence: str = "High"
+    created_at: datetime
+
+    class Config:
+        from_attributes = True
+
+
+class ScanRunOut(BaseModel):
+    id: str
+    cloud_account_id: Optional[str] = None
+    user_id: Optional[str] = None
+    status: str
+    progress_percent: int
+    current_step: str
+    started_at: datetime
+    completed_at: Optional[datetime] = None
+    total_monthly_waste: float
+    currency: str = "USD"
+    risk_summary: dict = {}
+    resource_count_scanned: int
+    findings_count: int
+    is_sample_or_simulation: bool
+    findings: list[ScanFindingOut] = []
+
+    class Config:
+        from_attributes = True
+
+
+class ScanStatusOut(BaseModel):
+    id: str
+    status: str
+    progress_percent: int
+    current_step: str
+    findings_count: int
+    total_monthly_waste: float
+    completed_at: Optional[datetime] = None
+
+
+class ScanStartRequest(BaseModel):
+    cloud_account_id: Optional[str] = None
+    region: Optional[str] = "us-east-1"
+    is_demo: bool = False
+
